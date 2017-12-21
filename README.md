@@ -1,3 +1,3 @@
-# QuantumAI Release notes
+# QuantumAI
 
 This is the official documentation for QuantumAI.
