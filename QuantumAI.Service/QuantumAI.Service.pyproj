@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d8903b78-a168-421d-b17a-686e9bfa15ad</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>QuantumAI.Service.py</StartupFile>
+    <StartupFile>service.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -26,7 +26,10 @@
     <Compile Include="error_log.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="QuantumAI.Service.py" />
+    <Compile Include="scheduler.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="service.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
