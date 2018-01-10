@@ -1,10 +1,10 @@
-import schedule
+﻿import schedule
 import time
 import service as sr
 def job():
     sr.perform()
 
-schedule.every().hour.do(job)
+#schedule.every().hour.do(job)
 schedule.every().day.at("00:10").do(job)
 
 while 1:
