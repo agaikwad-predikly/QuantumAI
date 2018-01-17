@@ -1,10 +1,11 @@
 ﻿import schedule
 import time
-import service as sr
+import api_service as sr
+import calculation_service as cal_sr
 def job():
     sr.perform()
+    cal_sr.perform()
 
-#schedule.every().hour.do(job)
 schedule.every().day.at("00:10").do(job)
 
 while 1:

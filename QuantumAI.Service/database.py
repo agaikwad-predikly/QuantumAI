@@ -1,8 +1,8 @@
-import sys
+﻿import sys
 import psycopg2
 
 def get_connection_string():
-	return "dbname=quantum_ai_db user=postgres password=root"
+	return "host=localhost dbname=quantum_ai_db user=postgres password=root"
 
 def flatten(l):
     return map(lambda x: x[0], l)
