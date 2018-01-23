@@ -275,9 +275,14 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
                 #            log.Error(e)
                 #        x+=1
                 else:
-                    df = ek.get_data(ticker_symbol, indicator[i][2],debug=True)
+                    df = ek.get_data(instruments=[ticker_symbol], fields=[indicator[i][2], indicator[i][2] + ".date"],debug=True)
                     indicator_value = df[0][indicator_name][0]
-                    save_ticker_api_data(indicator_value, ticker_id, 0, 0, indicator[i][3],  indicator_name, indicator_id, datetime.date.today())
+                    data_date = datetime.date.today();
+                    try:
+                        data_date = df[0]['Date'][0]
+                    except Exception as e:    
+                        log.Error(e)
+                    save_ticker_api_data(indicator_value, ticker_id, 0, 0, indicator[i][3],  indicator_name, indicator_id, data_date)
             except Exception as e:    
                 log.Error(e)
 
@@ -288,13 +293,13 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 def save_ticker_data(df, ticker_id):
 	dt = pd.DataFrame(df)
 	for index, row in dt.iterrows():
-            high = float(row['HIGH']) if math.isnan(float(row['HIGH'])) == False else 0
-            CLOSE = float(row['CLOSE']) if math.isnan(float(row['CLOSE'])) == False else 0
-            LOW = float(row['LOW']) if math.isnan(float(row['LOW'])) == False else 0
-            OPEN = float(row['OPEN']) if math.isnan(float(row['OPEN'])) == False else 0
-            COUNT = float(row['COUNT']) if math.isnan(float(row['COUNT'])) == False else 0
-            VOLUME = float(row['VOLUME']) if math.isnan(float(row['VOLUME'])) == False else 0
-            stocks = db.call_procedure("insert_update_eod_data",[ticker_id, row.name, high, CLOSE, LOW, OPEN, COUNT, VOLUME])
+		high = float(row['HIGH']) if math.isnan(float(row['HIGH'])) == False else 0
+		CLOSE = float(row['CLOSE']) if math.isnan(float(row['CLOSE'])) == False else 0
+		LOW = float(row['LOW']) if math.isnan(float(row['LOW'])) == False else 0
+		OPEN = float(row['OPEN']) if math.isnan(float(row['OPEN'])) == False else 0
+		COUNT = float(row['COUNT']) if math.isnan(float(row['COUNT'])) == False else 0
+		VOLUME = float(row['VOLUME']) if math.isnan(float(row['VOLUME'])) == False else 0
+		stocks = db.call_procedure("insert_update_eod_data",[ticker_id, row.name, high, CLOSE, LOW, OPEN, COUNT, VOLUME])
 
 def save_ticker_api_data(api_value, ticker_id, period_yr, period_qtr, period_type, api_name, api_id, for_date):
 	stocks = db.call_procedure("insert_update_api_data",[ticker_id, api_id, period_type, period_yr, period_qtr, float(api_value) if math.isnan(float(api_value)) == False else None, for_date])
