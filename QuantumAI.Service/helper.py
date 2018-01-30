@@ -1,4 +1,4 @@
-import datetime
+﻿import datetime
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -22,7 +22,7 @@ def quarters_range(date_to, date_from=None):
 
 def quarter_start_end(quarter, year=None):
     """
-    Returns datetime.daet object for the start
+    Returns datetime.date object for the start
     and end dates of `quarter` for the input `year`
     If `year` is none, it defaults to the current
     year.
@@ -31,3 +31,9 @@ def quarter_start_end(quarter, year=None):
         year = datetime.datetime.now().year
     d = datetime.date(year, 1+3*(quarter-1), 1)
     return d, d+relativedelta(months=3, days=-1)
+
+def year_start_end(year):
+    d = datetime.date(year, 1, 1)
+    starting_day_of_current_year =d.replace(month=1, day=1)    
+    ending_day_of_current_year = d.replace(month=12, day=31)
+    return starting_day_of_current_year, ending_day_of_current_year

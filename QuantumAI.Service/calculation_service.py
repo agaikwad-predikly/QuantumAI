@@ -43,6 +43,7 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                 last_date = indicator[i][4]
                 indicator_name = indicator[i][0]
                 indicator_id = indicator[i][1]
+                end_duration = indicator[i][9]
                 formula = indicator[i][2]
                 period = indicator[i][3]
                 if last_date is None:
@@ -54,15 +55,23 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                     daterange = pd.date_range(last_date, end_date)
                     for dt in daterange:
                         try:
-                            if dt < datetime.date.today():
+                            if dt < datetime.datetime.now():
                                 formula = indicator[i][8]
-
+                            else:
+                                 formula = indicator[i][2]
+               
+                            print(indicator_name)
                             if formula!='':
-                                indicator_value = CalculateFormula(formula, indicator[i][3], dt, ticker_id) 
+                                indicator_value = CalculateFormula(formula, indicator[i][3], dt, ticker_id, 1, dt.year) 
                                 save_ticker_indicator_data(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, dt._date_repr)
                         except Exception as e:    
                             log.Error(e)
                 elif period=="FQ":
+                    if end_duration is not None and end_duration > 0:
+                            end_date = end_date  + relativedelta(years=(end_duration))
+                    else:
+                        end_date = end_date  + relativedelta(years=(1))
+                    
                     quarter = helper.quarters_range(last_date, end_date)
                     x = 0
                     for x in range(len(quarter)):
@@ -72,13 +81,21 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                             prev_q_start, prev_q_end = get_start_end_date(period_yr, period_qtr, ticker_symbol)
                             if prev_q_end < datetime.date.today():
                                 formula = indicator[i][8]
+                            else:
+                                 formula = indicator[i][2]
+               
+                            print(indicator_name)
                             if formula!='':
-                                indicator_value = CalculateFormula(formula, indicator[i][3], prev_q_start, ticker_id) 
+                                indicator_value = CalculateFormula(formula, indicator[i][3], prev_q_start, ticker_id, period_qtr, period_yr) 
                                 save_ticker_indicator_data_multiple(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, prev_q_start, prev_q_end)
                         except Exception as e:    
                             log.Error(e)
                         x+=1
                 elif period=="FY":
+                    if end_duration is not None and end_duration > 0:
+                        end_date = end_date  + relativedelta(years=end_duration)
+                    else:
+                        end_date = end_date  + relativedelta(years=1)
                     years = range(last_date.year, end_date.year + 1)
                     x = 0
                     for x in range(len(years)):
@@ -87,8 +104,11 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                             prev_q_start, prev_q_end = get_start_end_date(period_yr, 0, ticker_symbol)
                             if prev_q_end < datetime.date.today():
                                 formula = indicator[i][8]
+                            else:
+                                formula = indicator[i][2]
+                            print(indicator_name)
                             if formula!='':
-                                indicator_value = CalculateFormula(formula, indicator[i][3], prev_q_end, ticker_id) 
+                                indicator_value = CalculateFormula(formula, indicator[i][3], prev_q_end, ticker_id, 0, period_yr) 
                                 save_ticker_indicator_data_multiple(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, prev_q_start, prev_q_end)
                         except Exception as e:    
                             log.Error(e)
@@ -101,35 +121,33 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
     except Exception as e:    
         log.Error(e)
 
-def CalculateFormula(formula, period, date, ticker_id): 
+def CalculateFormula(formula, period, date, ticker_id, f_quater, f_year): 
     try:
-        params = re.findall(r'@\d{0,5}{#?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}',  formula)
+        params = re.findall(r'@\d{0,5}{#?[\D]?[\D]?[\D]?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}',  formula)
         if params:
             params = set(params)
             for temp in params:
-                api_id = int(re.sub("{#?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}", "", temp).replace("@", ""))
+                api_id = int(re.sub("{#?[\D]?[\D]?[\D]?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}", "", temp).replace("@", ""))
                 forms = re.sub("}|} ","",re.sub("[\d]+{", "", temp)).replace("@#", "")
-                diff = int(re.sub("\D","",forms))
+                diff = int(re.sub(re.sub("[+-]?\d","",forms),"",forms))
                 ind_period = re.sub("[+-]?\d","",forms)
                 year = date.year
                 quarter=int(math.ceil(date.month/3.))
                 if ind_period == 'Y' or ind_period == 'IY':
-                    year = year + diff
+                    year = f_year + diff
                     period = "FY"
                 elif ind_period == 'Q' or ind_period == 'IQ':
-                    temp_date = date + timedelta((3*diff)*365/12)
-                    quarter=int(math.ceil(temp_date.month/3.))
-                    year = temp_date.year
+                    quarter=4 if f_quater==1 else f_quater-1
+                    year = f_year-1  if f_quater==1 else f_year
                     period = "FQ"
                 elif ind_period == 'QY':
-                    temp_date = date + timedelta((3*diff)*365/12)
-                    quarter=int(math.ceil(temp_date.month/3.))
-                    year = temp_date.year - 1
+                    quarter=f_quater
+                    year = f_year - 1
                     period = "FQ"
-                elif ind_period == 'D':
+                elif ind_period == 'D' or ind_period == 'ID':
                     date =  date - timedelta(days=diff)
                     period = "DL"
-                elif ind_period == 'AVGD':
+                elif ind_period == 'AVGD' or ind_period == 'AVGID':
                     year =  diff
                     period = "AVG"
                 str_date = date.strftime("%Y-%m-%d")
@@ -156,24 +174,29 @@ def save_ticker_indicator_data_multiple(indicator_value, ticker_id, period_type,
 def get_start_end_date(f_year, f_quarter,ticker_symbol ):
     period_end_dt = datetime.date.today()
     period_start_dt = datetime.date.today()
-    try:
-        period = "FY0"
-        current_yr = datetime.datetime.now().year
-        year = current_yr if (f_year>current_yr) else f_year
-        if f_quarter>0:
-            period = str(f_quarter) + "FQ" + str(year)
-        else:
-            period = "FY" + str(year)
-        ek.set_app_id('93D5C93060C3ECEAD451638')
-        df = ek.get_data(instruments=[ticker_symbol], fields=['TR.SMPeriodEndDate'],parameters={'Period': period},debug=True)
-        period_end_dt = df[0]["Period End Date"][0]
-        if f_quarter>0:
-            dt = period_end_dt + relativedelta(months=-3, days=0)
-            period_start_dt = datetime.date(dt.year,dt.month, 1)
-        else:
-            dt = period_end_dt + relativedelta(years=-1, days=0)
-            period_start_dt = datetime.date(dt.year,dt.month, 1)
-    except Exception as e: 
-         period_start_dt, period_end_dt =helper.quarter_start_end(f_quarter, f_year)
+    #try:
+    #    period = "FY0"
+    #    current_yr = datetime.datetime.now().year
+    #    year = current_yr-1 if (f_year>(current_yr-1)) else f_year
+    #    yr_dif = f_year - year
+    #    if f_quarter>0:
+    #        period = str(f_quarter) + "FQ" + str(year)
+    #    else:
+    #        period = "FY" + str(year)
+    #    ek.set_app_id('93D5C93060C3ECEAD451638')
+    #    df = ek.get_data(instruments=[ticker_symbol], fields=['TR.SMPeriodEndDate'],parameters={'Period': period},debug=True)
+    #    end_dt = datetime.datetime.strptime(df[0]["Period End Date"][0], '%Y-%m-%dT%H:%M:%SZ')
+    #    period_end_dt = datetime.date( end_dt.year + yr_dif, end_dt.month, end_dt.day)
+    #    if f_quarter>0:
+    #        dt = period_end_dt + relativedelta(months=-2, days=0)
+    #        period_start_dt = datetime.date(dt.year,dt.month, 1)
+    #    else:
+    #        dt = period_end_dt + relativedelta(years=-1, months=1)
+    #        period_start_dt = datetime.date(dt.year,dt.month, 1)
+    #except Exception as e: 
+    if f_quarter>0:
+        period_start_dt, period_end_dt =helper.quarter_start_end(f_quarter, f_year)
+    else:
+        period_start_dt, period_end_dt =helper.year_start_end(f_year)
     return period_start_dt, period_end_dt
 perform()
