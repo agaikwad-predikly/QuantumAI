@@ -29,6 +29,7 @@
     <Compile Include="error_log.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="get_ticker_details.py" />
     <Compile Include="helper.py">
       <SubType>Code</SubType>
     </Compile>

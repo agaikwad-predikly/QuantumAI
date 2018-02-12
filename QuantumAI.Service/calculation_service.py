@@ -52,7 +52,8 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                     last_date = datetime.datetime.fromordinal(last_date.toordinal())
 
                 if period=="DL":
-                    daterange = pd.date_range(last_date, end_date)
+                    daterange = pd.date_range(last_date, end_date, freq='B')
+                    charlist = []
                     for dt in daterange:
                         try:
                             if dt < datetime.datetime.now():
@@ -63,9 +64,13 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
                             print(indicator_name)
                             if formula!='':
                                 indicator_value = CalculateFormula(formula, indicator[i][3], dt, ticker_id, 1, dt.year) 
-                                save_ticker_indicator_data(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, dt._date_repr)
+                                #save_ticker_indicator_data(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, dt._date_repr)
+                                if indicator_value is not None and math.isnan(float(indicator_value)) == False:
+                                    charlist.append(dt._date_repr + '~' + str(indicator_value) + '~' + str(ticker_id))
+                                    
                         except Exception as e:    
                             log.Error(e)
+                    save_ticker_indicator_data_bulk(ticker_id, indicator_id, indicator[i][3], charlist)
                 elif period=="FQ":
                     if end_duration is not None and end_duration > 0:
                             end_date = end_date  + relativedelta(years=(end_duration))
@@ -127,12 +132,13 @@ def CalculateFormula(formula, period, date, ticker_id, f_quater, f_year):
         if params:
             params = set(params)
             for temp in params:
+                temp_dt= date
                 api_id = int(re.sub("{#?[\D]?[\D]?[\D]?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}", "", temp).replace("@", ""))
                 forms = re.sub("}|} ","",re.sub("[\d]+{", "", temp)).replace("@#", "")
                 diff = int(re.sub(re.sub("[+-]?\d","",forms),"",forms))
                 ind_period = re.sub("[+-]?\d","",forms)
-                year = date.year
-                quarter=int(math.ceil(date.month/3.))
+                year = temp_dt.year
+                quarter=int(math.ceil(temp_dt.month/3.))
                 if ind_period == 'Y' or ind_period == 'IY':
                     year = f_year + diff
                     period = "FY"
@@ -145,12 +151,15 @@ def CalculateFormula(formula, period, date, ticker_id, f_quater, f_year):
                     year = f_year - 1
                     period = "FQ"
                 elif ind_period == 'D' or ind_period == 'ID':
-                    date =  date - timedelta(days=diff)
+                    temp_dt =  temp_dt + timedelta(days=diff)
                     period = "DL"
+                elif ind_period == 'LD' or ind_period == 'ILD':
+                    temp_dt =  temp_dt + timedelta(days=diff)
+                    period = "LDL"
                 elif ind_period == 'AVGD' or ind_period == 'AVGID':
-                    year =  diff
+                    year =  diff if diff>=0 else -diff
                     period = "AVG"
-                str_date = date.strftime("%Y-%m-%d")
+                str_date = temp_dt.strftime("%Y-%m-%d")
                 if 'I' not in ind_period:
                     api_value = db.call_procedure("get_api_values",[ticker_id, period, year, quarter, str_date, api_id])
                 else:
@@ -170,6 +179,9 @@ def save_ticker_indicator_data(indicator_value, ticker_id, period_type, indicato
 
 def save_ticker_indicator_data_multiple(indicator_value, ticker_id, period_type, indicator_name, indicator_id, from_date, to_date):
 	stocks = db.call_procedure("insert_update_indicator_data_multiple",[ticker_id, indicator_id, period_type, float(indicator_value) if math.isnan(float(indicator_value)) == False else None, from_date, to_date])
+
+def save_ticker_indicator_data_bulk(ticker_id, indicator_id,period_type, data):
+	stocks = db.call_procedure("insert_update_indicator_data_bulk",[ticker_id, indicator_id,period_type,  data])
 
 def get_start_end_date(f_year, f_quarter,ticker_symbol ):
     period_end_dt = datetime.date.today()
