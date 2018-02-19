@@ -211,4 +211,43 @@ def get_start_end_date(f_year, f_quarter,ticker_symbol ):
     else:
         period_start_dt, period_end_dt =helper.year_start_end(f_year)
     return period_start_dt, period_end_dt
-perform()
+#perform()
+
+
+def calculate_bulk_ticker_fundamentals_details():
+	tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+	i = 0
+	while i < len(tickers):
+		ticker_sym = tickers[i][1]
+		ticker_id = tickers[i][2]
+		try:
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			log.Error(ticker_sym + " - " + str(ticker_id) + "START")
+			indicator = db.call_procedure("insert_update_indicator_actual_date",[ticker_id])
+			log.Error(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+			print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+			print(ticker_sym + " - " + str(ticker_id) + "Error")
+			log.Error(e)
+		i+=1
+
+def calculate_bulk_ticker_technical_details():
+	tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+	i = 0
+	while i < len(tickers):
+		ticker_sym = tickers[i][1]
+		ticker_id = tickers[i][2]
+		try:
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			log.Error(ticker_sym + " - " + str(ticker_id) + "START")
+			indicator = db.call_procedure("insert_update_indicator_technical_actual_date",[ticker_id])
+			log.Error(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+			print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+			print(ticker_sym + " - " + str(ticker_id) + "Error")
+			log.Error(e)
+		i+=1
+
+calculate_bulk_ticker_fundamentals_details()
+calculate_bulk_ticker_technical_details()
+#perform()
