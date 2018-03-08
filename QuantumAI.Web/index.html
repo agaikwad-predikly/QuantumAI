@@ -1,0 +1,804 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Quantum AI Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="/css/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link href="css/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+    <div class="page" style="display:none;">
+        <header class="menu-header">
+            <div class="header-logo">
+                <img src="images/QALogo.png" />
+            </div>
+            <div class="container">
+                <a class="menu-link" href="#menu">
+                    <img src="images/menu.png" class="responsive-menu" />
+                </a>
+                <nav id="menu" class="menu">
+                    <ul>
+                        <li class="active">
+                            <a href="index.html" class="">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="simulation.html">Simulation</a>
+                        </li>
+                        <li>
+                            <a href="recommendation.html">Recommendation</a>
+                        </li>
+                        <li class="log-out-menu">
+                            <a href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-logout">
+                <a href="/login.html"><img src="images/logout.png" /></a>
+            </div>
+
+        </header>
+        <div class="row page-content">
+            <div class="col-lg-2 col-md-12 section-profile">
+                <div class="row">
+                    <div class=" col-md-3 col-lg-12 profile-img">
+                        <img src="images/jerry.jpg" />
+                    </div>
+                    <div class="col-md-3 col-lg-12 user-details">
+                        <span class="profile-name">JERRY APODACA</span>
+                        <span class="profile-designation">CHAIRMAN AND CHIEF EXECUTIVE OFFICER</span>
+                    </div>
+                    <div class="col-lg-12 col-md-3 profile-portfolio-progress">
+                        <div class="progress green">
+                            <span class="progress-left">
+                                <span class="progress-bar"></span>
+                            </span>
+                            <span class="progress-right">
+                                <span class="progress-bar"></span>
+                            </span>
+                            <div class="progress-value">90%</div>
+                        </div>
+                        <div class="profile-portfolio-status positive">
+                            1,421.32K<br />
+                            +213.2↑
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="col-md-3 col-lg-12 profile-portfolio-progress">
+                        <div class="progress red">
+                            <span class="progress-left">
+                                <span class="progress-bar"></span>
+                            </span>
+                            <span class="progress-right">
+                                <span class="progress-bar"></span>
+                            </span>
+                            <div class="progress-value">90%</div>
+                        </div>
+                        <div class="profile-portfolio-status negative">
+                            421.32K<br />
+                            -213.2↓
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-md-12 section-recommendation">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <div class="left">
+                            <div class="btn-group btn-radio">
+                                <button type="button" class="btn btn-default active">XF</button>
+                                <button type="button" class="btn btn-default">XT</button>
+                                <button type="button" class="btn btn-default">XC</button>
+                            </div>
+                        </div>
+                        <div class="div-recc-dt">Date: <input type="text" class="recc_dt_picker" id="_buy_dt" /></div>
+                    </div>
+                    <div class="col-md-12">
+                        <nav class="navbar navbar-default">
+                            <div class="container-fluid">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="#">Recommendation</a>
+                                </div>
+                                <ul class="nav nav-tabs">
+                                    <li><a data-toggle="tab" class="active" href="#_tab-top-buy">BUY</a></li>
+                                    <li><a data-toggle="tab" href="#_tab-top-sell">SELL</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <div class="tab-content">
+                            <div id="_tab-top-buy" class="tab-pane fade active show">
+                                <div class="portfolio-tkr-list">
+                                    <div class="row portfolio-tkr-items">
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O^E07</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="positive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="recommended-past-tkr">
+                                    <b>Previous Ticker excluded:</b> AAPL.O, SWKS.O, GILD.O,MFSC.O
+                                </div>
+                            </div>
+                            <div id="_tab-top-sell" class="tab-pane fade">
+                                <div class="portfolio-tkr-list">
+                                    <div class="row portfolio-tkr-items">
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O^E07</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="positive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym"><i class="fa fa-star"></i>AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="postive">
+                                                        114.12
+                                                    </div>
+                                                </div>
+                                                <div class="right positive">
+                                                    11.24%<br>
+                                                    +12.32↑
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 item">
+                                            <div>
+                                                <div class="left item-header">
+                                                    <span class="tkr-sym">AAPL.O</span>
+                                                    <div class="negative">
+                                                        -4.12
+                                                    </div>
+                                                </div>
+                                                <div class="right negative">
+                                                    -1.24%<br>
+                                                    -1.32↓
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="recommended-past-tkr">
+                                    <b>Previous Ticker excluded:</b> AAPL.O, SWKS.O, GILD.O,MFSC.O
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2018 Quantum AI. All rights reserved.</p>
+        </div>
+    </div>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/animsition.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="js/pg_js/index.js"></script>
+   
+</body>
+</html>

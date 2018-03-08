@@ -215,7 +215,7 @@ def get_start_end_date(f_year, f_quarter,ticker_symbol ):
 
 
 def calculate_bulk_ticker_fundamentals_details():
-	tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 	i = 0
 	while i < len(tickers):
 		ticker_sym = tickers[i][1]
@@ -232,7 +232,7 @@ def calculate_bulk_ticker_fundamentals_details():
 		i+=1
 
 def calculate_bulk_ticker_technical_details():
-	tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 	i = 0
 	while i < len(tickers):
 		ticker_sym = tickers[i][1]

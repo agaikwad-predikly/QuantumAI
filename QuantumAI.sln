@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "QuantumAI.Service", "QuantumAI.Service\QuantumAI.Service.pyproj", "{D8903B78-A168-421D-B17A-686E9BFA15AD}"
-EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "QuantumAI.Web", "QuantumAI.Web\QuantumAI.Web.pyproj", "{E84F35DC-4377-46B8-B9B9-814B3B9D067F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{296A7FE1-6F39-4D45-9CF7-C23C96A77375}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +11,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{296A7F
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "QuantumAI.Web", "http://localhost:3015", "{A69E7B79-FA6A-4087-8565-D9EF54C0416E}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_3015"
+		Debug.AspNetCompiler.PhysicalPath = "QuantumAI.Web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_3015\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_3015"
+		Release.AspNetCompiler.PhysicalPath = "QuantumAI.Web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_3015\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "QuantumAI.Web\"
+	EndProjectSection
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "QuantumAI.API", "QuantumAI.API\QuantumAI.API.pyproj", "{D8D8414D-A75F-4F0E-B056-F9D294C4A104}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +43,14 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D8903B78-A168-421D-B17A-686E9BFA15AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8903B78-A168-421D-B17A-686E9BFA15AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E84F35DC-4377-46B8-B9B9-814B3B9D067F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E84F35DC-4377-46B8-B9B9-814B3B9D067F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E84F35DC-4377-46B8-B9B9-814B3B9D067F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E84F35DC-4377-46B8-B9B9-814B3B9D067F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A69E7B79-FA6A-4087-8565-D9EF54C0416E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A69E7B79-FA6A-4087-8565-D9EF54C0416E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A69E7B79-FA6A-4087-8565-D9EF54C0416E}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A69E7B79-FA6A-4087-8565-D9EF54C0416E}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D8D8414D-A75F-4F0E-B056-F9D294C4A104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D8414D-A75F-4F0E-B056-F9D294C4A104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D8414D-A75F-4F0E-B056-F9D294C4A104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D8414D-A75F-4F0E-B056-F9D294C4A104}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
