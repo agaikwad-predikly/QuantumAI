@@ -1,4 +1,5 @@
-﻿import database as db
+﻿import sys
+import database as db
 import pandas as pd
 import numpy as np
 import datetime
@@ -9,6 +10,9 @@ import error_log as log
 import re
 import helper
 import eikon as ek
+import os 
+import requests
+import threading
 
 def get_data_for_date(start_date,end_date):
 	tickers = db.call_procedure("get_ticker_details","")
@@ -32,7 +36,6 @@ def perform():
     d1 = datetime.datetime.now()
     d2 = datetime.datetime((d1 - relativedelta(years=20)).year, 1, 1)
     get_data_for_date(d2, d1)
-
 
 def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_symbol):
     try:
@@ -211,8 +214,6 @@ def get_start_end_date(f_year, f_quarter,ticker_symbol ):
     else:
         period_start_dt, period_end_dt =helper.year_start_end(f_year)
     return period_start_dt, period_end_dt
-#perform()
-
 
 def calculate_bulk_ticker_fundamentals_details():
 	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
@@ -247,7 +248,88 @@ def calculate_bulk_ticker_technical_details():
 			print(ticker_sym + " - " + str(ticker_id) + "Error")
 			log.Error(e)
 		i+=1
-
-calculate_bulk_ticker_fundamentals_details()
-calculate_bulk_ticker_technical_details()
+def predict_short_sell_fund_ticker_indicator():	try:		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\sell_fundamental_api"		if not os.path.exists(directory):			os.makedirs(directory)		while i < len(tickers):
+			ticker_sym = tickers[i][1]
+			ticker_id = tickers[i][2]
+			log.Error("FUND SHORT/SELL STARTED:" + ticker_sym)
+			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"			try:
+				indicator = db.call_procedure("get_ticker_fundamental_without_target_value_details",[ticker_id])
+				df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name',	'ticker_symbol',	'date',	'analyst_estimate_earning_per_share_high_annual_value',	'analyst_estimate_earning_per_share_high_quarterly_value',	'analyst_estimate_earning_per_share_low_annual_value',	'analyst_estimate_earning_per_share_low_quarterly_value',	'analyst_estimate_earning_per_share_mean_annual_value',	'analyst_estimate_earning_per_share_mean_quarterly_value',	'analyst_estimate_gross_profit_margin_high_annual_value',	'analyst_estimate_gross_profit_margin_high_quarterly_value',	'analyst_estimate_gross_profit_margin_low_annual_value',	'analyst_estimate_gross_profit_margin_low_quarterly_value',	'analyst_estimate_gross_profit_margin_mean_annual_value',	'analyst_estimate_gross_profit_margin_mean_quarterly_value',	'analyst_estimate_net_income_high_annual_value',	'analyst_estimate_net_income_high_quarterly_value',	'analyst_estimate_net_income_low_annual_value',	'analyst_estimate_net_income_low_quarterly_value',	'analyst_estimate_net_income_mean_annual_value',	'analyst_estimate_net_income_mean_quarterly_value',	'analyst_estimate_revenue_high_annual_value',	'analyst_estimate_revenue_high_quarterly_value', 'analyst_estimate_revenue_low_annual_value',	'analyst_estimate_revenue_low_quarterly_value',	'analyst_estimate_revenue_mean_annual_value',	'analyst_estimate_revenue_mean_quarterly_value',	'company_estimate_earning_per_share_mean_annual_value',	'company_estimate_earning_per_share_mean_quarterly_value',	'company_estimate_net_income_mean_annual_value',	'company_estimate_net_income_mean_quarterly_value',	'company_estimate_revenue_mean_annual_value',	'company_estimate_revenue_mean_quarterly_value',	'company_estimate_gross_profit_margin_mean_annual_value',	'company_estimate_gross_profit_margin_mean_quarterly_value',	'earning_per_share_annual_value',	'earning_per_share_quarterly_value',	'net_income_annual_value',	'net_income_quarterly_value',	'gross_profit_margin_annual_value',	'gross_profit_margin_quarterly_value',	'revenue_annual_value',	'revenue_quarterly_value',	'analyst_estimate_earning_per_share_high_annual',	'analyst_estimate_earning_per_share_high_quarterly',	'analyst_estimate_earning_per_share_low_annual',	'analyst_estimate_earning_per_share_low_quarterly',	'analyst_estimate_earning_per_share_mean_annual',	'analyst_estimate_earning_per_share_mean_quarterly',	'analyst_estimate_gross_profit_margin_high_annual',	'analyst_estimate_gross_profit_margin_high_quarterly',	'analyst_estimate_gross_profit_margin_low_annual',	'analyst_estimate_gross_profit_margin_low_quarterly',	'analyst_estimate_gross_profit_margin_mean_annual',	'analyst_estimate_gross_profit_margin_mean_quarterly',	'analyst_estimate_net_income_high_annual', 'analyst_estimate_net_income_high_quarterly',	'analyst_estimate_net_income_low_annual',	'analyst_estimate_net_income_low_quarterly',	'analyst_estimate_net_income_mean_annual',	'analyst_estimate_net_income_mean_quarterly',	'analyst_estimate_revenue_high_annual',	'analyst_estimate_revenue_high_quarterly',	'analyst_estimate_revenue_low_annual',	'analyst_estimate_revenue_low_quarterly',	'analyst_estimate_revenue_mean_annual',	'analyst_estimate_revenue_mean_quarterly',	'company_estimate_earning_per_share_mean_annual',	'company_estimate_earning_per_share_mean_quarterly',	'company_estimate_net_income_mean_annual',	'company_estimate_net_income_mean_quarterly',	'company_estimate_revenue_mean_annual',	'company_estimate_revenue_mean_quarterly',	'company_estimate_gross_profit_margin_mean_annual',	'company_estimate_gross_profit_margin_mean_quarterly',	'earning_per_share_annual',	'earning_per_share_quarterly',	'net_income_annual',	'net_income_quarterly',	'non_gaap_gross_margin_annual',	'non_gaap_gross_margin_quarterly',	'revenue_annual',	'revenue_quarterly',	'analyst_estimate_earning_per_share_high_annual_acc_dcc',	'analyst_estimate_earning_per_share_high_quarterly_acc_dcc',	'analyst_estimate_earning_per_share_low_annual_acc_dcc',	'analyst_estimate_earning_per_share_low_quarterly_acc_dcc',	'analyst_estimate_earning_per_share_mean_annual_acc_dcc',	'analyst_estimate_earning_per_share_mean_quarterly_acc_dcc',	'analyst_estimate_gross_profit_margin_high_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_high_quarterly_acc_dcc', 'analyst_estimate_gross_profit_margin_low_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_low_quarterly_acc_dcc',	'analyst_estimate_gross_profit_margin_mean_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_mean_quarterly_acc_dcc',	'analyst_estimate_net_income_high_annual_acc_dcc',	'analyst_estimate_net_income_high_quarterly_acc_dcc',	'analyst_estimate_net_income_low_annual_acc_dcc',	'analyst_estimate_net_income_low_quarterly_acc_dcc',	'analyst_estimate_net_income_mean_annual_acc_dcc',	'analyst_estimate_net_income_mean_quarterly_acc_dcc',	'analyst_estimate_revenue_high_annual_acc_dcc',	'analyst_estimate_revenue_high_quarterly_acc_dcc',	'analyst_estimate_revenue_low_annual_acc_dcc',	'analyst_estimate_revenue_low_quarterly_acc_dcc',	'analyst_estimate_revenue_mean_annual_acc_dcc',	'analyst_estimate_revenue_mean_quarterly_acc_dcc',	'company_estimate_earning_per_share_mean_annual_acc_dcc',	'company_estimate_earning_per_share_mean_quarterly_acc_dcc',	'company_estimate_net_income_mean_annual_acc_dcc',	'company_estimate_net_income_mean_quarterly_acc_dcc',	'company_estimate_revenue_mean_annual_acc_dcc',	'company_estimate_revenue_mean_quarterly_acc_dcc',	'company_estimate_gross_profit_margin_mean_annual_acc_dcc',	'company_estimate_gross_profit_margin_mean_quarterly_acc_dcc',	'earning_per_share_annual_acc_dcc',	'earning_per_share_quarterly_acc_dcc',	'net_income_annual_acc_dcc',	'net_income_quarterly_acc_dcc',	'non_gaap_gross_margin_annual_acc_dcc',	'non_gaap_gross_margin_quarterly_acc_dcc',	'revenue_annual_acc_dcc', 'revenue_quarterly_acc_dcc'])				df.to_csv(filename, index=False, encoding='utf-8')				API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/qa/R/short/json"				f =open(filename,'rb')				files = {'input': f}
+				r = requests.post(API_ENDPOINT, files=files)				if not r.json() is None:					for data in r.json():
+						db.call_procedure("update_indicator_target_data",[data['ticker_id'], 2,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
+			except Exception as e:
+				log.Error(e)
+			finally:
+				i=i+1
+				log.Error("FUND SHORT/SELL COMPLETED:" + ticker_sym)
+				f.close()
+				try:
+					os.remove(filename)
+				except Exception as e:
+					log.Error(e)
+	except Exception as e:
+		log.Error(e)def predict_buy_ticker_indicator():	try:		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\buy_fundamental_api"		if not os.path.exists(directory):			os.makedirs(directory)		while i < len(tickers):
+			ticker_sym = tickers[i][1]
+			ticker_id = tickers[i][2]
+			log.Error("FUND BUY STARTED:" + ticker_sym)
+			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"			try:
+				indicator = db.call_procedure("get_ticker_fundamental_without_target_value_details",[ticker_id])
+				df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name',	'ticker_symbol',	'date',	'analyst_estimate_earning_per_share_high_annual_value',	'analyst_estimate_earning_per_share_high_quarterly_value',	'analyst_estimate_earning_per_share_low_annual_value',	'analyst_estimate_earning_per_share_low_quarterly_value',	'analyst_estimate_earning_per_share_mean_annual_value',	'analyst_estimate_earning_per_share_mean_quarterly_value',	'analyst_estimate_gross_profit_margin_high_annual_value',	'analyst_estimate_gross_profit_margin_high_quarterly_value',	'analyst_estimate_gross_profit_margin_low_annual_value',	'analyst_estimate_gross_profit_margin_low_quarterly_value',	'analyst_estimate_gross_profit_margin_mean_annual_value',	'analyst_estimate_gross_profit_margin_mean_quarterly_value',	'analyst_estimate_net_income_high_annual_value',	'analyst_estimate_net_income_high_quarterly_value',	'analyst_estimate_net_income_low_annual_value',	'analyst_estimate_net_income_low_quarterly_value',	'analyst_estimate_net_income_mean_annual_value',	'analyst_estimate_net_income_mean_quarterly_value',	'analyst_estimate_revenue_high_annual_value',	'analyst_estimate_revenue_high_quarterly_value', 'analyst_estimate_revenue_low_annual_value',	'analyst_estimate_revenue_low_quarterly_value',	'analyst_estimate_revenue_mean_annual_value',	'analyst_estimate_revenue_mean_quarterly_value',	'company_estimate_earning_per_share_mean_annual_value',	'company_estimate_earning_per_share_mean_quarterly_value',	'company_estimate_net_income_mean_annual_value',	'company_estimate_net_income_mean_quarterly_value',	'company_estimate_revenue_mean_annual_value',	'company_estimate_revenue_mean_quarterly_value',	'company_estimate_gross_profit_margin_mean_annual_value',	'company_estimate_gross_profit_margin_mean_quarterly_value',	'earning_per_share_annual_value',	'earning_per_share_quarterly_value',	'net_income_annual_value',	'net_income_quarterly_value',	'gross_profit_margin_annual_value',	'gross_profit_margin_quarterly_value',	'revenue_annual_value',	'revenue_quarterly_value',	'analyst_estimate_earning_per_share_high_annual',	'analyst_estimate_earning_per_share_high_quarterly',	'analyst_estimate_earning_per_share_low_annual',	'analyst_estimate_earning_per_share_low_quarterly',	'analyst_estimate_earning_per_share_mean_annual',	'analyst_estimate_earning_per_share_mean_quarterly',	'analyst_estimate_gross_profit_margin_high_annual',	'analyst_estimate_gross_profit_margin_high_quarterly',	'analyst_estimate_gross_profit_margin_low_annual',	'analyst_estimate_gross_profit_margin_low_quarterly',	'analyst_estimate_gross_profit_margin_mean_annual',	'analyst_estimate_gross_profit_margin_mean_quarterly',	'analyst_estimate_net_income_high_annual', 'analyst_estimate_net_income_high_quarterly',	'analyst_estimate_net_income_low_annual',	'analyst_estimate_net_income_low_quarterly',	'analyst_estimate_net_income_mean_annual',	'analyst_estimate_net_income_mean_quarterly',	'analyst_estimate_revenue_high_annual',	'analyst_estimate_revenue_high_quarterly',	'analyst_estimate_revenue_low_annual',	'analyst_estimate_revenue_low_quarterly',	'analyst_estimate_revenue_mean_annual',	'analyst_estimate_revenue_mean_quarterly',	'company_estimate_earning_per_share_mean_annual',	'company_estimate_earning_per_share_mean_quarterly',	'company_estimate_net_income_mean_annual',	'company_estimate_net_income_mean_quarterly',	'company_estimate_revenue_mean_annual',	'company_estimate_revenue_mean_quarterly',	'company_estimate_gross_profit_margin_mean_annual',	'company_estimate_gross_profit_margin_mean_quarterly',	'earning_per_share_annual',	'earning_per_share_quarterly',	'net_income_annual',	'net_income_quarterly',	'non_gaap_gross_margin_annual',	'non_gaap_gross_margin_quarterly',	'revenue_annual',	'revenue_quarterly',	'analyst_estimate_earning_per_share_high_annual_acc_dcc',	'analyst_estimate_earning_per_share_high_quarterly_acc_dcc',	'analyst_estimate_earning_per_share_low_annual_acc_dcc',	'analyst_estimate_earning_per_share_low_quarterly_acc_dcc',	'analyst_estimate_earning_per_share_mean_annual_acc_dcc',	'analyst_estimate_earning_per_share_mean_quarterly_acc_dcc',	'analyst_estimate_gross_profit_margin_high_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_high_quarterly_acc_dcc', 'analyst_estimate_gross_profit_margin_low_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_low_quarterly_acc_dcc',	'analyst_estimate_gross_profit_margin_mean_annual_acc_dcc',	'analyst_estimate_gross_profit_margin_mean_quarterly_acc_dcc',	'analyst_estimate_net_income_high_annual_acc_dcc',	'analyst_estimate_net_income_high_quarterly_acc_dcc',	'analyst_estimate_net_income_low_annual_acc_dcc',	'analyst_estimate_net_income_low_quarterly_acc_dcc',	'analyst_estimate_net_income_mean_annual_acc_dcc',	'analyst_estimate_net_income_mean_quarterly_acc_dcc',	'analyst_estimate_revenue_high_annual_acc_dcc',	'analyst_estimate_revenue_high_quarterly_acc_dcc',	'analyst_estimate_revenue_low_annual_acc_dcc',	'analyst_estimate_revenue_low_quarterly_acc_dcc',	'analyst_estimate_revenue_mean_annual_acc_dcc',	'analyst_estimate_revenue_mean_quarterly_acc_dcc',	'company_estimate_earning_per_share_mean_annual_acc_dcc',	'company_estimate_earning_per_share_mean_quarterly_acc_dcc',	'company_estimate_net_income_mean_annual_acc_dcc',	'company_estimate_net_income_mean_quarterly_acc_dcc',	'company_estimate_revenue_mean_annual_acc_dcc',	'company_estimate_revenue_mean_quarterly_acc_dcc',	'company_estimate_gross_profit_margin_mean_annual_acc_dcc',	'company_estimate_gross_profit_margin_mean_quarterly_acc_dcc',	'earning_per_share_annual_acc_dcc',	'earning_per_share_quarterly_acc_dcc',	'net_income_annual_acc_dcc',	'net_income_quarterly_acc_dcc',	'non_gaap_gross_margin_annual_acc_dcc',	'non_gaap_gross_margin_quarterly_acc_dcc',	'revenue_annual_acc_dcc', 'revenue_quarterly_acc_dcc'])				df.to_csv(filename, index=False, encoding='utf-8')				API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/qa/R/fund/json"				f =open(filename,'rb')				files = {'input': f}
+				r = requests.post(API_ENDPOINT, files=files)				if not r.json() is None:					for data in r.json():
+						db.call_procedure("update_indicator_target_data",[data['ticker_id'], 0,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
+			except Exception as e:
+					#print(e + "Error")
+					log.Error(e)
+			finally:
+				i=i+1
+				f.close()
+				log.Error("FUND BUY COMPLETED:" + ticker_sym)
+				try:
+					os.remove(filename)
+				except Exception as e:
+					log.Error(e)
+	except Exception as e:
+		log.Error(e)
+		#print(e + "Error")def predict_technical_ticker_indicator():	try:		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\technical_api"		if not os.path.exists(directory):			os.makedirs(directory)		while i < len(tickers):
+			ticker_sym = tickers[i][1]
+			ticker_id = tickers[i][2]
+			log.Error("TECH STARTED:" + ticker_sym)
+			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"			try:
+				indicator = db.call_procedure("get_ticker_technical_indicator_value_details_without_target",[ticker_id])
+				df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name','ticker_symbol',	'date',	'14_day_close_price_sma',	'14_day_close_price_high',	'14_day_close_price_low',	'14_day_50_day_sma',	'14_day_100_day_sma',	'14_day_200_day_sma'])
+				df.to_csv(filename, index=False, encoding='utf-8')				API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/qa/R/tech/json"				f =open(filename,'rb')				files = {'input': f}
+				r = requests.post(API_ENDPOINT, files=files)				if not r.json() is None:					for data in r.json():
+						db.call_procedure("update_indicator_target_data",[data['ticker_id'], 1,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
+			except Exception as e:
+					log.Error(e)
+			finally:
+				i=i+1
+				f.close()
+				try:
+					os.remove(filename)					
+					log.Error("TECH COMPLETED:" + ticker_sym)
+				except Exception as e:
+					log.Error(e)
+	except Exception as e:
+			log.Error(e)
+			#print(e + "Error")
+#calculate_bulk_ticker_fundamentals_details()
+#calculate_bulk_ticker_technical_details()
 #perform()
+predict_short_sell_fund_ticker_indicator()
+#predict_buy_ticker_indicator()
+#predict_technical_ticker_indicator()
+#t = threading.Thread(target=predict_short_sell_fund_ticker_indicator)
+#t.start()
+
+#t = threading.Thread(target=predict_buy_ticker_indicator)
+#t.start()
+
+#t = threading.Thread(target=predict_technical_ticker_indicator)
+#t.start()

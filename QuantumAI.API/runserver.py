@@ -4,14 +4,15 @@ This script runs the QuantumAI.API application using a development server.
 
 from os import environ
 
-from flask import Flask
+from flask import Flask,abort, request
 from webargs import fields
 from flask_apispec import use_kwargs, marshal_with
+from flask_cors import CORS
 from api import *
 app = Flask(__name__)
 
 app.register_blueprint(routes)
-
+CORS(app)
 @app.route("/")
 def hello():
     return "Hello World!"

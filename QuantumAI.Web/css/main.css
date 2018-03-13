@@ -1636,3 +1636,7 @@ font-lighter {
     border-color: 
     border: 1px solid rgba(0,0,0,.15);
 }
+
+.hide {
+	display: none !important;
+}

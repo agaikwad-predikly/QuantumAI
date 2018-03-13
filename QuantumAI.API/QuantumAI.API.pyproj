@@ -31,6 +31,9 @@
     <Compile Include="api\auth.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="api\indicator.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="api\master.py">
       <SubType>Code</SubType>
     </Compile>
