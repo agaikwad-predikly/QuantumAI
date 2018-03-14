@@ -18,6 +18,7 @@
     <PythonWsgiHandler>$(MSBuildProjectName).app</PythonWsgiHandler>
     <Name>QuantumAI.API</Name>
     <RootNamespace>QuantumAI.API</RootNamespace>
+    <NameOfLastUsedPublishProfile>QuantumAPI</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +50,7 @@
     <Compile Include="runserver.py" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="QuantumAPI.pubxml" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
