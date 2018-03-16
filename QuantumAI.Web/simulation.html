@@ -1,0 +1,660 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Quantum AI Recommendation</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />
+    <link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/animate.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hamburgers.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/animsition.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/util.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker3.min.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link href="css/select2.css" rel="stylesheet" />
+    <link href="css/daterangepicker.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+    <div class="page" style="display:none;">
+        <header class="menu-header">
+            <div class="header-logo">
+                <img src="images/QALogo.png" />
+            </div>
+            <div class="container">
+                <a class="menu-link" href="#menu">
+                    <img src="images/menu.png" class="responsive-menu" />
+                </a>
+                <nav id="menu" class="menu">
+                    <ul>
+                        <li>
+                            <a href="index.html" class="">Dashboard</a>
+                        </li>
+                        <li class="active">
+                            <a href="simulation.html">Simulation</a>
+                        </li>
+                        <li>
+                            <a href="recommendation.html">Recommendation</a>
+                        </li>
+                        <li class="log-out-menu">
+                            <a href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-logout">
+                <a href="/login.html"><img src="images/logout.png" /></a>
+            </div>
+        </header>
+        <div class="recc-container page-content">
+            <div class="row no-margin">
+                <div class="col-md-5" style="padding-bottom:20px;">
+                    <!--<input id="tags" class="form-control " placeholder="Ticker Symbol/ Ticker name....">-->
+                    <select id="tickers-multiple" name="tickers[]" multiple="multiple">
+                        <option value="BABA.K">Alibaba Group Holding Ltd(BABA.K)</option>
+                        <option value="UPS">United Parcel Service Inc(UPS)</option>
+                        <option value="FB.O">Facebook, Inc.(FB.O)</option>
+                        <option value="GILD.O">Gilead Sciences, Inc.(GILD.O)</option>
+                        <option value="MLCO.O">Melco Resorts & Entertainment Limited(MLCO.O)</option>
+                        <option value="MU.O">Micron Technology, Inc.(MU.O)</option>
+                        <option value="NVDA.O">NVIDIA Corporation(NVDA.O)</option>
+                        <option value="SWKS.O">Skyworks Solutions, Inc.(SWKS.O)</option>
+                        <option value="HD">Home Depot Inc.(HD)</option>
+                        <option value="FDX">FedEx Corp(FDX)</option>
+                    </select>
+                    <a data-toggle="modal" data-target="#myModal" id="lnkOpenCSVUploadModal" style="width: 27px;">
+                        <img src="images/import-csv.png" style="width:27px" />
+
+                    </a>
+                    <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Upload ticker CSV</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="file" accept=".csv" id="tickerCsvUpload" />
+                                    <span><input type="checkbox" value="0" id="chkCsvContainHeader" /> CSV include header.</span>
+                                    <p class="info-txt">Note: Insert ticker list in first column of CSV.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" id="btnuploadcsv">Upload</button>
+                                    <button type="button" class="btn  btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 datarange-group"><input type="text" name="daterange" class="form-control" value="01/01/2015 - 01/31/2015" /><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></div>
+                <div class="col-md-2">
+                    <select class="form-control">
+                        <option value="1">Yearly</option>
+                        <option value="2" selected>Quaterly</option>
+                        <option value="0">Monthly</option>
+                    </select>
+                </div>
+                <div class="col-md-2"><button class="btn btn-info" id="btnSimulate">Simulate</button></div>
+            </div>
+            <div class="row" id="_div_ticker_dtl" style="display:none;">
+                <ul class="nav nav-tabs nav-tabs-vertical col-lg-2" id="model-tabs">
+                    <li>
+                        <a class="active" href="#a_tab" data-toggle="tab">
+                            <span></span>BUY
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#b_tab" data-toggle="tab">
+                            <span></span>SELL
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content col-lg-10">
+                    <div class="tab-pane active" id="a_tab">
+                        <div class="row">
+
+                            <div class="col-12 simulation-list">
+
+                                <div class="row">
+                                    <div class="col-md-12 " style="padding-bottom:20px;">
+                                        <div class="right">
+                                            <div class="left" style="padding:5px; ">
+                                                <i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;"></i>
+                                                <i class="btn fa fa-file-pdf-o" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+                                            </div>
+                                            <div class="btn-group btn-radio">
+                                                <button type="button" class="btn btn-default active">XF</button>
+                                                <button type="button" class="btn btn-default">XT</button>
+                                                <button type="button" class="btn btn-default">XC</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 ">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp">
+                                                        <span data-counter="counterup" data-value="7800">78</span>
+                                                        <span class="font-green-sharp">%</span>
+                                                    </h3>
+                                                    <small>Gain/Loss</small>
+                                                </div>
+                                                <div class="icon text-right">
+                                                    24.9<br />
+                                                    96.5%
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-bold" style="margin-bottom: 28px;">
+                                                    <div class="status-title positive"> <span class="number">133</span> BUYS </div>
+                                                    <div class="status-number negative"> <span class="number">74</span> SELLS </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 buy-dtl ">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp ">
+                                                        <span data-counter="counterup" class="positive">TOP 3 BUY's</span>
+                                                    </h3>
+                                                </div>
+                                                <div class="icon">
+                                                    <i class="fa fa-thumbs-up positive"></i>
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-14">
+                                                    <div class="status-title"> AAPL.O </div>
+                                                    <div class="status-number"> 24.76</div>
+                                                    <div class="status-number"> 95.01% </div>
+                                                </div>
+                                                <div class="status font-14">
+                                                    <div class="status-title"> SWKS.O </div>
+                                                    <div class="status-number"> 24.62 </div>
+                                                    <div class="status-number"> 65.00% </div>
+                                                </div>
+                                                <div class="status  font-14">
+                                                    <div class="status-title"> FB.O </div>
+                                                    <div class="status-number"> 23.54 </div>
+                                                    <div class="status-number"> 64.61% </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 sell-dtl">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp ">
+                                                        <span data-counter="counterup" class="negative">BOTTOM 3 BUY's</span>
+                                                    </h3>
+                                                </div>
+                                                <div class="icon">
+                                                    <i class="fa fa-thumbs-down negative"></i>
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-14">
+                                                    <div class="status-title"> AAIT.O </div>
+                                                    <div class="status-number"> 23.84 </div>
+                                                    <div class="status-number"> 5.32% </div>
+                                                </div>
+                                                <div class="status font-14">
+                                                    <div class="status-title"> MSFT.O </div>
+                                                    <div class="status-number"> 22.94 </div>
+                                                    <div class="status-number"> 8.42% </div>
+                                                </div>
+                                                <div class="status  font-14">
+                                                    <div class="status-title"> LNKD.O </div>
+                                                    <div class="status-number"> 22.84 </div>
+                                                    <div class="status-number">8.25%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row portfolio-tkr-items">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered buy_sell_tbl" style=" background:#fff;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="background-color: #e0dfdf;">% Gain/Loss</th>
+                                                    <th>
+                                                        AAPL.O
+                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
+                                                    </th>
+                                                    <th>SWKS.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>FB.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>AAIT.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>MSFT.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>LNKD.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td>
+                                                        <div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div>
+                                                    </td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;">
+                                                        <div class="clearfix">
+                                                            <div class="left">4.9</div>
+                                                            <div class="right">96%</div>
+                                                        </div>
+                                                        <div class="text_buy_sell_status sell">S</div>
+                                                    </td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.2</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">4.34</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">  4.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="b_tab">
+                        <div class="row">
+                            <div class="col-12 simulation-list">
+                                <div class="row">
+                                    <div class="col-md-12 " style="padding-bottom:20px;">
+                                        <div class="right">
+                                            <div class="left" style="padding:5px; ">
+                                                <i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;"></i>
+                                                <i class="btn fa fa-file-pdf-o" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+                                            </div>
+                                            <div class="btn-group btn-radio">
+                                                <button type="button" class="btn btn-default active">XF</button>
+                                                <button type="button" class="btn btn-default">XT</button>
+                                                <button type="button" class="btn btn-default">XC</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 ">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp">
+                                                        <span data-counter="counterup" data-value="7800">78</span>
+                                                        <span class="font-green-sharp">%</span>
+                                                    </h3>
+                                                    <small>Gain/Loss</small>
+                                                </div>
+                                                <div class="icon text-right">
+                                                    24.9<br />
+                                                    96.5%
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-bold" style="margin-bottom: 28px;">
+                                                    <div class="status-title positive"> <span class="number">13</span> BUYS </div>
+                                                    <div class="status-number negative"> <span class="number">74</span> SELLS </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 buy-dtl ">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp ">
+                                                        <span data-counter="counterup" class="positive">TOP 3 SELL's</span>
+                                                    </h3>
+                                                </div>
+                                                <div class="icon">
+                                                    <i class="fa fa-thumbs-up positive"></i>
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-14">
+                                                    <div class="status-title"> AAPL.O </div>
+                                                    <div class="status-number"> 95.01% </div>
+                                                    <div class="status-number"> 78.32% </div>
+                                                </div>
+                                                <div class="status font-14">
+                                                    <div class="status-title"> SWKS.O </div>
+                                                    <div class="status-number"> 65.00% </div>
+                                                    <div class="status-number"> 85.10% </div>
+                                                </div>
+                                                <div class="status  font-14">
+                                                    <div class="status-title"> FB.O </div>
+                                                    <div class="status-number"> 64.61% </div>
+                                                    <div class="status-number"> 88.23% </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <div class="dashboard-stat2 sell-dtl">
+                                            <div class="display">
+                                                <div class="number">
+                                                    <h3 class="font-green-sharp ">
+                                                        <span data-counter="counterup" class="negative">BOTTOM 3 SELL's</span>
+                                                    </h3>
+                                                </div>
+                                                <div class="icon">
+                                                    <i class="fa fa-thumbs-down negative"></i>
+                                                </div>
+                                            </div>
+                                            <div class="progress-info">
+                                                <div class="status font-14">
+                                                    <div class="status-title"> AAIT.O </div>
+                                                    <div class="status-number"> 5.32% </div>
+                                                    <div class="status-number"> 95.12% </div>
+                                                </div>
+                                                <div class="status font-14">
+                                                    <div class="status-title"> MSFT.O </div>
+                                                    <div class="status-number"> 8.42% </div>
+                                                    <div class="status-number"> 88.34% </div>
+                                                </div>
+                                                <div class="status  font-14">
+                                                    <div class="status-title"> LNKD.O </div>
+                                                    <div class="status-number">8.25%</div>
+                                                    <div class="status-number"> 85.52% </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row portfolio-tkr-items">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered buy_sell_tbl" style=" background:#fff;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="background-color: #e0dfdf;">% Gain/Loss</th>
+                                                    <th>
+                                                        AAPL.O
+                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
+                                                    </th>
+                                                    <th>SWKS.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>FB.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>AAIT.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>MSFT.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                    <th>LNKD.O<a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td>
+                                                        <div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div>
+                                                    </td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;">
+                                                        <div class="clearfix">
+                                                            <div class="left">4.9</div>
+                                                            <div class="right">96%</div>
+                                                        </div>
+                                                        <div class="text_buy_sell_status sell">S</div>
+                                                    </td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.2</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">4.34</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>1FQ2015</td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">  4.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="container" style="height: 400px; min-width: 310px"></div>
+        <div class="footer">
+            <p>© 2018 Quantum AI. All rights reserved.</p>
+        </div>
+    </div>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/animsition.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="js/pg_js/recommendation.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/select2.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/daterangepicker.js"></script>
+    <script src="js/highstock.js"></script>
+    <script>
+
+        $(function () {
+
+            $('input[name="daterange"]').daterangepicker();
+            $('#tickers-multiple').select2({
+                placeholder: "Ticker Name/Ticker Symbol ...."
+            });
+            $('#MyModal').on('hidden.bs.modal', function () {
+                $('#tickerCsvUpload').val("");
+                $('#chkCsvContainHeader').prop('checked', false);
+            });
+
+            $('#btnSimulate').click(function (e) {
+                e.preventDefault();
+                $('#_div_ticker_dtl').show();
+            });
+            $("#btnuploadcsv").bind("click", function () {
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+                if (regex.test($("#tickerCsvUpload").val().toLowerCase())) {
+                    jsonObj = [];
+                    var startindex = 0;
+                    if ($('#chkCsvContainHeader').is(":checked")) {
+                        startindex = 1;
+                    }
+                    if (typeof (FileReader) != "undefined") {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var rows = e.target.result.split("\n");
+                            for (var i = startindex; i < rows.length; i++) {
+                                var cells = rows[i].split(",");
+                                if (cells[0] != '') {
+                                    jsonObj.push(cells[0]);
+                                }
+                            }
+
+                            $('#tickers-multiple').val(jsonObj);
+                            $('#tickers-multiple').trigger('change');
+                            $('#lnkOpenCSVUploadModal').click();
+                        }
+                        reader.readAsText($("#tickerCsvUpload")[0].files[0]);
+                    }
+                } else {
+                    alert("Please upload a valid CSV file.");
+                }
+            });
+        });
+    </script>
+
+    <div id="modal_graph" class="modal fade" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="_buygraph-container" style="width: 100%;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-primary col-md-4" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
