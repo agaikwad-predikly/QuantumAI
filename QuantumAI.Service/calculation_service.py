@@ -319,10 +319,10 @@ def calculate_bulk_ticker_technical_details():
 	except Exception as e:
 			log.Error(e)
 			#print(e + "Error")
-#calculate_bulk_ticker_fundamentals_details()
+calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
 #perform()
-predict_short_sell_fund_ticker_indicator()
+#predict_short_sell_fund_ticker_indicator()
 #predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()
 #t = threading.Thread(target=predict_short_sell_fund_ticker_indicator)
