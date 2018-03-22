@@ -145,6 +145,6 @@ def generate_ticker_fundamental_details_csv():	tickers = call_procedure("get_ti
 					print "done"#update_ticker_indicator_prediction()
 #generate_ticker__both_combined_details_csv()
 #generate_ticker_technical_details_csv()
-predict_short_sell_fund_ticker_indicator()
+#predict_short_sell_fund_ticker_indicator()
 #predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()

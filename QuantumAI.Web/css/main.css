@@ -1441,8 +1441,20 @@ font-lighter {
 }
 
 
-.select2-container {
-	width: 87% !important;
+.chosen-container {
+	width: 95% !important;
+}
+.chosen-container-multi .chosen-choices {
+	padding: .2rem 0.55rem;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #495057;
+    background-color: #fff;
+    background-image: none;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple,
@@ -1620,13 +1632,26 @@ font-lighter {
 	text-align: center;
 }
 
+.sim_text_buy_sell_status {
+	width: 20px;
+	color: white;
+	font-size: 12px;
+	font-weight: 500;
+	text-align: center;
+	vertical-align: bottom;
+    display: inline-block;
+	background-color: #c1c1c1;
+}
 
-	.text_buy_sell_status.buy {
+
+	.text_buy_sell_status.buy,
+	.sim_text_buy_sell_status.buy  {
 		background-color: #228B22;
 	}
 
 
-	.text_buy_sell_status.sell {
+	.text_buy_sell_status.sell,
+	.sim_text_buy_sell_status.sell {
 		background-color: #e83d3d;
 	}
 
@@ -1930,3 +1955,5 @@ Due to the split circle of progress-left and progress right, we must use the ani
 		transform: rotate(180deg);
 	}
 }
+
+

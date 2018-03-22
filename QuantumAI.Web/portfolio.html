@@ -79,41 +79,52 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-8">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-4">
 										<select class="form-control" id="ddl_indicator">
-											<option value="XF" selected>Fundamental</option>
-											<option value="XT">Technical</option>
-											<option value="XS">Fundamental & Technical</option>
+											<option value="XF" selected>QAI ENGINE - EQUITY XF</option>
+											<option value="XT">QAI ENGINE - EQUITY XT</option>
+											<option value="XS">QAI ENGINE - EQUITY XS</option>
 										</select>
 									</div>
-									<div class="col-md-3 ">
+									<div class="col-md-2 ">
 										<select class="form-control" id="ddl_target">
 											<option value="1" selected>BUY</option>
 											<option value="0">SHORT / SELL</option>
 										</select>
 									</div>
-									<div class="col-md-3">
-										<div class="input-group">
-											<span class="input-group-addon" id="spn_angle_sign"><i class="fa fa-angle-left" style="font-size: 18px;"></i></span>
-											<input type="number" name="" id="txtstrength" class="form-control" value="20" placeholder="Fundamental Strength" />
-											<span class="input-group-addon">%</span>
+									<div class="col-md-4">
+										<div class="row">
+											<div class="col-md-5">
+												<select class="form-control" id="ddl_adv_rule">
+													<option value="0" selected>AI-AR</option>
+													<option value="1">AI6-AR</option>
+												</select>
+											</div>
+											<div class="col-md-7">
+												<div class="input-group">
+													<span class="input-group-addon" id="spn_angle_sign"><i class="fa fa-angle-left" style="font-size: 18px;"></i>=</span>
+													<input type="number" name="" id="txtstrength" class="form-control" value="20" placeholder="Fundamental Strength" />
+													<span class="input-group-addon">AD</span>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="row">
-									<div class="col-md-6">
-										<button class="btn btn-info" id="btnRecommend">Simulate</button>
-									</div>
-									<div class="col-md-6 right  text-right">
-										<div class="right" style="padding:10px 5px; ">
-											<i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;" id="btnExcelExport"></i>
-											<i class="btn fa fa-file-pdf-o hide" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+									<div class="col-md-2">
+										<div class="row">
+											<div class="col-md-8">
+												<button class="btn btn-info" id="btnRecommend">Simulate</button>
+											</div>
+											<div class="col-md-4 right  text-right">
+												<div class="right" style="padding: 7px 0 5px 0;">
+													<i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;" id="btnExcelExport"></i>
+													<i class="btn fa fa-file-pdf-o hide" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+												</div>
+											</div>
 										</div>
 									</div>
+
 								</div>
 							</div>
 						</div>
@@ -148,7 +159,7 @@
 									<div class="display">
 										<div class="number">
 											<h3 class="font-green-sharp ">
-												<span data-counter="counterup" class="positive top_tkr_header">TOP 5 BUY's</span>
+												<span data-counter="counterup" class="positive top_tkr_header">TOP 5 Buys</span>
 											</h3>
 										</div>
 										<div class="icon">
@@ -165,7 +176,7 @@
 									<div class="display">
 										<div class="number">
 											<h3 class="font-green-sharp ">
-												<span data-counter="counterup" class="bottom_tkr_header">BOTTOM 5 BUY's</span>
+												<span data-counter="counterup" class="bottom_tkr_header">BOTTOM 5 Buys</span>
 											</h3>
 										</div>
 										<div class="icon">

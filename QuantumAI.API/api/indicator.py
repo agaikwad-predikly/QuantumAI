@@ -74,9 +74,33 @@ def portfolio_predict_monthly():
 			params["limit"] = 50
 		if ("adv_weight" not in params) or (params["adv_weight"] is  None):
 			params["adv_weight"] = 20 if(params["target_type"]==1) else 0
-		tickers = db.call_procedure_with_header("get_mom_portfolio_prediction_details",[params["date"], params["indicator_type"],params["target_type"],params["adv_weight"],params["limit"]])
+		if ("adv_rule" not in params) or (params["adv_rule"] is  None):
+			params["adv_rule"] = 0 if(params["target_type"]==1) else 0
+		
+		tickers = db.call_procedure_with_header("get_mom_portfolio_prediction_details",[params["date"], params["indicator_type"],params["target_type"],params["adv_weight"],params["limit"], params["adv_rule"]])
 		content = {'status': 'SUCCESS','status_code': '200', 'message' : 'SUCCESS', 'data': tickers}
 		return Response(response=json.dumps(content),status=200,mimetype='application/json')
 	else:
 		content = {'status': 'BAD REQUEST','status_code': '400', 'message' : 'Need parameter date, indicator_type, target_type, adv_weight, limit', 'data': None}#tickers}
+		return Response(response=json.dumps(content),status=200,mimetype='application/json')
+
+
+
+@routes.route("/simulation_predict_month", methods = ['GET','POST'])
+@auth.require_api_token
+def simulation_predict_month():
+	params = request.json;
+	if(params is not None and "from_date" in params and "to_date" in params and "indicator_type" in params and "ticker_id" in params  and params["from_date"] is not None and params["to_date"] is not None and params["indicator_type"] is not None and params["ticker_id"] is not None):
+		if (not "limit"  in params) or (params["limit"] is  None):
+			params["limit"] = 50
+		if ("adv_weight" not in params) or (params["adv_weight"] is  None):
+			params["adv_weight"] = 20 if(params["target_type"]==1) else 0
+		if ("adv_rule" not in params) or (params["adv_rule"] is  None):
+			params["adv_rule"] = 0 if(params["target_type"]==1) else 0
+		ticker_arr = [int(numeric_string) for numeric_string in params["ticker_id"]]
+		tickers = db.call_procedure_with_header("get_mom_simulation_prediction_details",[params["from_date"], params["to_date"], str(params["indicator_type"]),ticker_arr,int(params["adv_weight"]),int(params["limit"]), int(params["adv_rule"])])
+		content = {'status': 'SUCCESS','status_code': '200', 'message' : 'SUCCESS', 'data': tickers}
+		return Response(response=json.dumps(content),status=200,mimetype='application/json')
+	else:
+		content = {'status': 'BAD REQUEST','status_code': '400', 'message' : 'Need parameter from_date, to_date, indicator_type, ticker_id, adv_weight, limit', 'data': None}#tickers}
 		return Response(response=json.dumps(content),status=200,mimetype='application/json')

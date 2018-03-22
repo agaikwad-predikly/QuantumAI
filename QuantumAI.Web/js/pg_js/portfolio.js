@@ -25,7 +25,7 @@ $(document).ready(function ($) {
 
 		$('.dt_picker').closest('div').find('.fa-calendar').click(function () {
 			$(this).closest('div').find('.dt_picker').focus();
-		})
+		});
 
 		$('#ddl_indicator').change(function (e) {
 			ChangeStrength();
@@ -69,6 +69,9 @@ $(document).ready(function ($) {
 		function ChangeStrength() {
 			if ($('#ddl_indicator').val() == 'XF' || $('#ddl_indicator').val() == 'XS') {
 				$("#txtstrength").removeAttr("disabled");
+
+				$('#ddl_adv_rule').val("0");
+				$('#ddl_adv_rule').removeAttr("disabled");
 				if ($('#ddl_target').val() == "1") {
 					$('#txtstrength').val("20");
 					$('#spn_angle_sign').find('i').removeClass('fa-angle-left').addClass('fa-angle-right');
@@ -80,6 +83,9 @@ $(document).ready(function ($) {
 			else {
 				$('#txtstrength').val("0");
 				$('#txtstrength').attr("disabled", "disabled");
+				$('#ddl_adv_rule').val("0");
+				$('#ddl_adv_rule').attr("disabled", "disabled");
+
 			}
 		}
 
@@ -90,6 +96,8 @@ $(document).ready(function ($) {
 			var indicator_type = $('#ddl_indicator').val();
 			var target_type = $('#ddl_target').val();
 			var strength = $('#txtstrength').val();
+			var adv_rule = $('#ddl_adv_rule').val();
+
 			ResetBuySellTBL();
 			$.blockUI();
 			inst = setInterval(change, 3000);
@@ -102,21 +110,9 @@ $(document).ready(function ($) {
 				}
 			}
 
-			BindMonthlyData(portoflio_dt_full, indicator_type, target_type, strength, limit);
+			BindMonthlyData(portoflio_dt_full, indicator_type, target_type, strength, limit, adv_rule);
 
-			var inst2 = setInterval(executefor_othermnth.bind(null, portoflio_dt_full, indicator_type, target_type, strength, limit), 3000);
-
-			function executefor_othermnth(portoflio_dt_full, indicator_type, target_type, strength, limit) {
-				if (is_request_complete == 1) {
-					var i = 0;
-					for (i = 1; i < parseInt($("#ddl_no_of_month").val()) ; i++) {
-						var dt = moment(portoflio_dt_full).add(i, 'M').toDate();
-						BindMonthlyData(dt, indicator_type, target_type, strength, limit);
-					}
-					clearInterval(inst2);
-
-				}
-			}
+			//var inst2 = setInterval(executefor_othermnth.bind(null, portoflio_dt_full, indicator_type, target_type, strength, limit, adv_rule), 3000);
 
 			var inst3 = setInterval(CalculateTickerYrReturn.bind(null, target_type), 3000);
 
@@ -218,15 +214,29 @@ $(document).ready(function ($) {
 			$('.buy_sell_tbl').empty();
 			$('.top_buysell-dtl .progress-info').empty();
 			$('.bottom_buysell-dtl .progress-info').empty();
+			counter=0;
 			if ($('#ddl_target').val() == "1") {
-				$('.top_buysell-dtl').find('.top_tkr_header').html('Top 5 BUY\'s');
-				$('.bottom_buysell-dtl').find('.bottom_tkr_header').html('Bottom 5 BUY\'s');
+				$('.top_buysell-dtl').find('.top_tkr_header').html('Top 5 Buys');
+				$('.bottom_buysell-dtl').find('.bottom_tkr_header').html('Bottom 5 Buys');
 			}
 			else {
-				$('.top_buysell-dtl').find('.top_tkr_header').html('Top 5 SELL\'s');
-				$('.bottom_buysell-dtl').find('.bottom_tkr_header').html('Bottom 5 SELL\'s');
+				$('.top_buysell-dtl').find('.top_tkr_header').html('Top 5 Sells');
+				$('.bottom_buysell-dtl').find('.bottom_tkr_header').html('Bottom 5 Sells');
 			}
-			$('.buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">' + $("#ddl_no_of_month").val() + 'M % Returns</div><div class="status-number right"  style="font-size: 24px;"><span id="total_yrl_rtn"></span>%</div></div></th></tr></thead><tbody>');
+			$('.buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">' + $("#ddl_no_of_month").val() + 'M % Returns  <br>' + moment(new Date()).format('lll') + '</div><div class="status-number right"  style="font-size: 24px;"><span id="total_yrl_rtn"></span>%</div></div></th></tr></thead><tbody>');
+		}
+
+
+		function executefor_othermnth(portoflio_dt_full, indicator_type, target_type, strength, limit, adv_rule) {
+			if (is_request_complete == 1) {
+				var i = 0;
+				for (i = 1; i < parseInt($("#ddl_no_of_month").val()) ; i++) {
+					var dt = moment(portoflio_dt_full).add(i, 'M').toDate();
+					BindMonthlyData(dt, indicator_type, target_type, strength, limit, adv_rule);
+				}
+				//clearInterval(inst2);
+
+			}
 		}
 
 		function change() {
@@ -259,14 +269,14 @@ $(document).ready(function ($) {
 			}
 		}
 
-		function BindMonthlyData(portoflio_dt_full, indicator_type, target_type, strength, limit) {
+		function BindMonthlyData(portoflio_dt_full, indicator_type, target_type, strength, limit, adv_rule) {
 
 			var portoflio_dt = moment(portoflio_dt_full).format("YYYY-MM-DD HH:mm:ss");
 			var form = new FormData();
 			var settings = {
 				"async": true,
 				"crossDomain": true,
-				"url": $.api_base_url + "/portfolio_predict_month?date=" + portoflio_dt + "&indicator_type=" + indicator_type + "&target_type=" + target_type + "&adv_weight=" + strength + "&limit=" + limit,
+				"url": $.api_base_url + "/portfolio_predict_month?date=" + portoflio_dt + "&indicator_type=" + indicator_type + "&target_type=" + target_type + "&adv_weight=" + strength + "&limit=" + limit + "&adv_rule=" + adv_rule,
 				"method": "GET",
 				"headers": {
 					"Content-Type": "application/json",
@@ -293,7 +303,7 @@ $(document).ready(function ($) {
 							if ($('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id) == undefined || $('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).length == 0) {
 
 								var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left"><a class="_trk_symbol" data-toggle="modal" data-target="#modal_graph">' + value.ticker_symbol + '</a>'
-											+ '<span class="tkr-fullname">' + ((value.is_newly_added == 1 && columnIndex == 1) ? '<i class="fa fa-star"></i>' : '') + value.ticker_name + '</span>'
+											+ '<span class="tkr-fullname">'  + value.ticker_name + '</span>'
 											+ '</div><div class="right"><div class="right _tkr_yr_rtn"></div></td>'
 
 								var i = 0;
@@ -308,16 +318,18 @@ $(document).ready(function ($) {
 						if (total_gain != 0) {
 							total_gain = total_gain / colcnt;
 							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').addClass((total_gain < 0) ? 'negative' : '').html(total_gain.toFixed(2) + '%')
-							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_count').html('#' + colcnt);
+							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_count').html(colcnt + " " + ((target_type == 1) ? "Buys" : "Shorts/Sells"));
 						} else {
 							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').html('-')
-							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_count').html('#' + colcnt);
+							$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_count').html(colcnt + " " + ((target_type == 1) ? "Buys" : "Shorts/Sells"));;
 
 						}
 
 						counter = text.length - 1;
 						if (is_request_complete == 0) {
 							change();
+							is_request_complete = 1;
+							executefor_othermnth(portoflio_dt_full, indicator_type, target_type, strength, limit, adv_rule);
 						}
 						else {
 							ShowMonthReturnProgress();
