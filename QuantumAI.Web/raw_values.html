@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Quantum AI Portfolio</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" type="image/png" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/animate.css" />
+	<link rel="stylesheet" type="text/css" href="/css/hamburgers.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/animsition.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/util.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker3.min.css" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+	<div class="page" style="display:none;">
+		<header class="menu-header">
+			<div class="header-logo">
+				<img src="images/QALogo.png" />
+			</div>
+			<div class="container">
+				<a class="menu-link" href="#menu">
+					<img src="images/menu.png" class="responsive-menu" />
+				</a>
+				<nav id="menu" class="menu">
+					<ul>
+						<li>
+							<a href="index.html" class="">Dashboard</a>
+						</li>
+						<li>
+							<a href="portfolio.html">Portfolio</a>
+						</li>
+						<li>
+							<a href="simulation.html">Simulation</a>
+						</li>
+						<li>
+							<a href="recommendation.html">Recommendation</a>
+						</li>
+						<li class="active">
+							<a href="raw_values.html">Raw Values</a>
+						</li>
+						<li class="log-out-menu">
+							<a href="/login.html">Logout</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div class="header-logout">
+				<a href="/login.html"><img src="images/logout.png" /></a>
+			</div>
+		</header>
+		<div class="page-content">
+			<div class="col-12 simulation-list">
+				<div class="row">
+					<div class="col-md-12 " style="padding-bottom:20px;">
+						<div class="row">
+									<div class="col-md-4 datarange-group"><input type="text" name="date" class="dt_picker form-control" id="portfolio_date" value="" /><i class="fa fa-calendar"></i></div>
+							<div class="col-md-4">
+								<select class="form-control" id="ddl_indicator">
+									<option value="XF" selected>QAI ENGINE - EQUITY XF</option>
+									<option value="XT">QAI ENGINE - EQUITY XT</option>
+									<option value="XS">QAI ENGINE - EQUITY XS</option>
+								</select>
+							</div>
+							<div class="col-md-2 ">
+								<select class="form-control" id="ddl_target">
+									<option value="1" selected>BUY</option>
+									<option value="0">SHORT / SELL</option>
+								</select>
+							</div>
+							<div class="col-md-2">
+								<div class="row">
+									<div class="col-md-8">
+										<button class="btn btn-info" id="btnSimulate">Simulate</button>
+									</div>
+									<div class="col-md-4 right  text-right">
+										<div class="right" style="padding: 7px 0 5px 0;">
+											<i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;" id="btnExcelExport"></i>
+											<i class="btn fa fa-file-pdf-o hide" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row portfolio-tkr-items" id="_div_ticker_dtl" style="display:none;">
+					<div class="col-md-12">
+						<div style="overflow: auto;">
+							<table class="table table-bordered buy_sell_tbl" border="1" style=" background:#fff;">
+								<thead>
+									<tr>
+										<th style="background-color: #e0dfdf;">
+											<div class="status font-bold" style="margin-bottom: 28px;">
+												<div class="status-title">Month % Returns</div>
+												<div class="status-number"><span id="total_yrl_rtn"></span>%</div>
+											</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row" id="init_msg_div">
+					<div style="min-height: 500px; text-align:center; width: 100%">
+						<h1 id="init_msg" style="text-align:center;vertical-align:middle; line-height: 350px;">Please click on simulate button to get portfolio</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<p>© 2018 Quantum AI. All rights reserved.</p>
+		</div>
+	</div>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/animsition.min.js"></script>
+	<script src="js/popper.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.blockUI.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="js/moment.js"></script>
+	<script src="js/pg_js/common.js"></script>
+	<script src="js/pg_js/config.js"></script>
+	<script src="js/jquery.table2excel.js"></script>
+	<script src="js/pg_js/raw_values.js"></script>
+</body>
+</html>

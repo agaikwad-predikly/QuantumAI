@@ -76,7 +76,7 @@ $(document).ready(function ($) {
 				var filename = "Top_" + limit + "_portfolios_by_" + (($('#ddl_indicator').val() == 'XF') ? 'fundamental' : ($('#ddl_indicator').val() == 'XT') ? "technical" : 'fundamental_and_technical') + ".xls";
 				var worksheetname = "Top_" + limit + "_portfolios_by_" + $('#ddl_indicator').val();
 				var html = $('.buy_sell_tbl').html()
-				$('.buy_sell_tbl').find('.text_buy_sell_status').remove();
+				//$('.buy_sell_tbl').find('.text_buy_sell_status').remove();
 				$(".buy_sell_tbl span.tkr-fullname").each(function () {
 					return $(this).html(" (" + $(this).html() + ")");
 				});
@@ -160,7 +160,7 @@ $(document).ready(function ($) {
 						}
 
 						$('#tickers-multiple').val(jsonObj);
-						$('#tickers-multiple').trigger('change');
+						$('#tickers-multiple').trigger("chosen:updated");
 						$('#lnkOpenCSVUploadModal').click();
 					}
 					reader.readAsText($("#tickerCsvUpload")[0].files[0]);
@@ -220,7 +220,7 @@ $(document).ready(function ($) {
 							var columnIndex = $('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + "_" + portoflio_dt_full.getFullYear()).index();
 							if ($('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id) == undefined || $('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).length == 0) {
 
-								var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left"><a class="_trk_symbol" data-toggle="modal" data-target="#modal_graph">' + value.ticker_symbol + '</a>'
+								var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left" style="cursor: pointer;" onclick="BindTickerMonthlyData(\'' + from_portoflio_dt + '\',\'' + to_portoflio_dt + '\',\'' + value.ticker_id + '\')">' + value.ticker_symbol
 											+ '<span class="tkr-fullname">' + value.ticker_name + '</span>'
 											+ '</div><div class="right"><div class="right _tkr_yr_rtn"></div></td>'
 
@@ -291,14 +291,13 @@ $(document).ready(function ($) {
 							if (isNaN(cmonth_total_gain)) {
 								cmonth_total_gain = 0;
 							}
-							month_total_gain = month_total_gain + cmonth_total_gain;
 
+							month_total_gain = month_total_gain + cmonth_total_gain;
 						});
 
 						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
 						$('#_div_ticker_dtl').show();
-
 					}
 				}
 			}).always(function () {
@@ -358,5 +357,63 @@ $(document).ready(function ($) {
 
 
 		}
+
 	}
 });
+
+
+function BindTickerMonthlyData(from_date, to_date, ticker_id) {
+	$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
+
+	$.blockUI();
+	var portoflio_from_dt = moment(from_date).format("YYYY-MM-DD HH:mm:ss");
+	var portoflio_to_dt = moment(to_date).format("YYYY-MM-DD HH:mm:ss");
+	var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": $.api_base_url + "/simulation_actual_data_month?from_date=" + portoflio_from_dt + "&to_date=" + portoflio_to_dt + "&ticker_id=" + ticker_id,
+		"method": "POST",
+		"contentType": 'application/json;charset=UTF-8',
+		"headers": {
+			"Content-Type": "application/json",
+			"Authorization": "AD3EDSFEF3EF23E123",
+		}
+	}
+
+	$.ajax(settings).done(function (response) {
+		if (response != undefined || response != '') {
+			var resp = jQuery.parseJSON(JSON.stringify(response));
+			if (resp.status_code == 200) {
+				var data = resp.data;
+				var columnIndex = 0;
+				var colcnt = 0
+				var total_gain = 0;
+				var jsonObj = [];
+				var col = [];
+				for (var key in data[0]) {
+					if (col.indexOf(key) === -1 && key != "value_date") {
+						col.push(key);
+					}
+				}
+				for (var i = 0; i < col.length; i++) {
+					$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace(/_/g, ' ') + '</div></div></th>');
+
+				}
+				$.each(data, function (key, value) {
+					var i = 0;
+					var tkrhtml = '<td><div class="left">' + value.value_date + '</div></td>'
+
+					for (i = 0; i < col.length ; i++) {
+						tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? value[col[i]] : '') + '</td>'
+					}
+
+					$('._ticker_buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
+				});
+			}
+
+			$('#lnkTickerMntRtn').click();
+		}
+	}).always(function () {
+		$.unblockUI()
+	});
+}
