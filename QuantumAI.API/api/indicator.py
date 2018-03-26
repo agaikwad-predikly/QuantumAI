@@ -121,8 +121,8 @@ def indicator_actual_value():
 @auth.require_api_token
 def simulation_actual_data_month():
 	params = request.args.to_dict()
-	if(params is not None and "from_date" in params and "to_date" in params and "ticker_id" in params  and params["ticker_id"] is not None and params["from_date"] is not None and params["to_date"] is not None):
-		tickers = db.call_procedure_with_header("get_mom_indicator_actual_details",[params["from_date"], params["to_date"],params["ticker_id"]])
+	if(params is not None and "from_date" in params and "limit" in params and "ticker_id" in params  and params["ticker_id"] is not None and params["from_date"] is not None and params["limit"] is not None):
+		tickers = db.call_procedure_with_header("get_mom_indicator_actual_details",[params["from_date"],params["ticker_id"],params["limit"]])
 		content = {'status': 'SUCCESS','status_code': '200', 'message' : 'SUCCESS', 'data': tickers}
 		return Response(response=json.dumps(content),status=200,mimetype='application/json')
 	else:

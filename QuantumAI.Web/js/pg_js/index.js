@@ -1,8 +1,11 @@
 ﻿$(document).ready(function ($) {
 
     "use strict";
-    if (localStorage.getItem("is_login") != 1) {
+    if (localStorage.getItem("is_login") == 0) {
         window.location.href = "/login.html"
+    }
+    else if (localStorage.getItem("is_login") == 2) {
+    	window.location.href = "/portfolio.html";
     }
     else {
         $('.page').show()

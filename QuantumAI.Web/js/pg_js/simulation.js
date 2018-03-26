@@ -12,14 +12,20 @@ var config = {
 	'.chosen-select-rtl': { rtl: true },
 	'.chosen-select-width': { width: '95%' }
 }
+var login_type = 0;
 
 $(document).ready(function ($) {
 
 	"use strict";
-	if (localStorage.getItem("is_login") != 1) {
+	if (localStorage.getItem("is_login") == 0) {
 		window.location.href = "/login.html"
 	}
 	else {
+		$('#menu').find('li[data-login-type="1"]').show();
+		if (localStorage.getItem("is_login") == 2) {
+			$('#menu').find('li[data-login-type="1"]').hide();
+		}
+		login_type = localStorage.getItem("is_login");
 
 		$.blockUI();
 		$('#init_msg_div').show();
@@ -42,12 +48,14 @@ $(document).ready(function ($) {
 			$this.toggleClass('active').next('ul').toggleClass('active');
 		});
 
+		var cur_dt = new Date();
+		var lastdt = new Date((cur_dt.getFullYear()-1), cur_dt.getMonth(),1)
 		$('.dt_picker').datepicker({
 			format: "M-yyyy",
 			viewMode: "months",
 			minViewMode: "months",
 			autoclose: 'true'
-		}).datepicker("setDate", new Date());
+		}).datepicker("setDate", lastdt);
 
 		$('.dt_picker').closest('div').find('.fa-calendar').click(function () {
 			$(this).closest('div').find('.dt_picker').focus();
@@ -112,8 +120,8 @@ $(document).ready(function ($) {
 					$('.buy_sell_tbl thead tr').append('<th class="head_mon_' + dt.getMonth() + "_" + dt.getFullYear() + '" data-month="' + dt.getMonth() + '" data-year="' + dt.getFullYear() + '"><div class="status font-14">	<div class="status-title text-center">' + moment(dt).format("MMM") + ' ' + dt.getFullYear() + '</div><div class="status-number"><div class="left _tkr_month_count"></div><div class="right _tkr_month_percent_gain"></div></div></div></th>');
 				}
 			}
-			var to_portoflio_dt_full = moment(portoflio_dt_full).add(parseInt($("#ddl_no_of_month").val()), 'M').toDate();
-
+			var to_portoflio_dt_full = moment(portoflio_dt_full).add((parseInt($("#ddl_no_of_month").val())-1), 'M').toDate();
+			to_portoflio_dt_full = new Date(to_portoflio_dt_full.getFullYear(), to_portoflio_dt_full.getMonth() + 1, 0);
 			BindMonthlyData(portoflio_dt_full, to_portoflio_dt_full, indicator_type, ticker_id, strength, limit, adv_rule);
 
 		});
@@ -242,7 +250,7 @@ $(document).ready(function ($) {
 								}
 								colcnt = colcnt + 1;
 
-								total_gain = (total_gain + value.percent_gain) / colcnt;
+								total_gain = total_gain + value.percent_gain;
 								$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').addClass((total_gain < 0) ? 'negative' : '').html(total_gain.toFixed(2) + '%').attr('data-sum', total_gain).attr('data-colcnt', colcnt);
 								$('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_count').html(colcnt);
 							}
@@ -287,13 +295,21 @@ $(document).ready(function ($) {
 						}
 						var month_total_gain = 0
 						$('.buy_sell_tbl thead th ._tkr_month_percent_gain').each(function (index, ele) {
+							var cnt = parseInt($(this).closest('th').find('._tkr_month_count').html());
 							var cmonth_total_gain = parseFloat($(this).attr('data-sum'));
+
 							if (isNaN(cmonth_total_gain)) {
 								cmonth_total_gain = 0;
 							}
+							if (isNaN(cnt)) {
+								cnt = 1;
+							}
 
+							cmonth_total_gain = cmonth_total_gain / cnt;
+							$(this).attr('data-sum', cmonth_total_gain).html(cmonth_total_gain.toFixed(2));
 							month_total_gain = month_total_gain + cmonth_total_gain;
 						});
+
 
 						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
@@ -363,57 +379,59 @@ $(document).ready(function ($) {
 
 
 function BindTickerMonthlyData(from_date, to_date, ticker_id) {
-	$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
+	if (login_type == 1) {
+		$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
 
-	$.blockUI();
-	var portoflio_from_dt = moment(from_date).format("YYYY-MM-DD HH:mm:ss");
-	var portoflio_to_dt = moment(to_date).format("YYYY-MM-DD HH:mm:ss");
-	var settings = {
-		"async": true,
-		"crossDomain": true,
-		"url": $.api_base_url + "/simulation_actual_data_month?from_date=" + portoflio_from_dt + "&to_date=" + portoflio_to_dt + "&ticker_id=" + ticker_id,
-		"method": "POST",
-		"contentType": 'application/json;charset=UTF-8',
-		"headers": {
-			"Content-Type": "application/json",
-			"Authorization": "AD3EDSFEF3EF23E123",
-		}
-	}
-
-	$.ajax(settings).done(function (response) {
-		if (response != undefined || response != '') {
-			var resp = jQuery.parseJSON(JSON.stringify(response));
-			if (resp.status_code == 200) {
-				var data = resp.data;
-				var columnIndex = 0;
-				var colcnt = 0
-				var total_gain = 0;
-				var jsonObj = [];
-				var col = [];
-				for (var key in data[0]) {
-					if (col.indexOf(key) === -1 && key != "value_date") {
-						col.push(key);
-					}
-				}
-				for (var i = 0; i < col.length; i++) {
-					$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace(/_/g, ' ') + '</div></div></th>');
-
-				}
-				$.each(data, function (key, value) {
-					var i = 0;
-					var tkrhtml = '<td><div class="left">' + value.value_date + '</div></td>'
-
-					for (i = 0; i < col.length ; i++) {
-						tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? value[col[i]] : '') + '</td>'
-					}
-
-					$('._ticker_buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
-				});
+		$.blockUI();
+		var portoflio_from_dt = moment(from_date).format("YYYY-MM-DD HH:mm:ss");
+		var portoflio_to_dt = moment(to_date).format("YYYY-MM-DD HH:mm:ss");
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": $.api_base_url + "/simulation_actual_data_month?from_date=" + portoflio_from_dt + "&limit=" + parseInt($("#ddl_no_of_month").val()) + "&ticker_id=" + ticker_id,
+			"method": "POST",
+			"contentType": 'application/json;charset=UTF-8',
+			"headers": {
+				"Content-Type": "application/json",
+				"Authorization": "AD3EDSFEF3EF23E123",
 			}
-
-			$('#lnkTickerMntRtn').click();
 		}
-	}).always(function () {
-		$.unblockUI()
-	});
+
+		$.ajax(settings).done(function (response) {
+			if (response != undefined || response != '') {
+				var resp = jQuery.parseJSON(JSON.stringify(response));
+				if (resp.status_code == 200) {
+					var data = resp.data;
+					var columnIndex = 0;
+					var colcnt = 0
+					var total_gain = 0;
+					var jsonObj = [];
+					var col = [];
+					for (var key in data[0]) {
+						if (col.indexOf(key) === -1 && key != "value_date") {
+							col.push(key);
+						}
+					}
+					for (var i = 0; i < col.length; i++) {
+						$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace(/_/g, ' ') + '</div></div></th>');
+
+					}
+					$.each(data, function (key, value) {
+						var i = 0;
+						var tkrhtml = '<td><div class="left">' + value.value_date + '</div></td>'
+
+						for (i = 0; i < col.length ; i++) {
+							tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? (parseFloat(value[col[i]])).toFixed(2) : '') + ((value.value_date == 'Acc/Dcc') ? '%' : '') + '</td>'
+						}
+
+						$('._ticker_buy_sell_tbl tbody').append('<tr ' + ((value.value_date == 'Acc/Dcc') ? 'class="highlight"' : '') + '>' + tkrhtml + '</tr>')
+					});
+				}
+
+				$('#lnkTickerMntRtn').click();
+			}
+		}).always(function () {
+			$.unblockUI()
+		});
+	}
 }

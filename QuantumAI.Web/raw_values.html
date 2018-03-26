@@ -30,7 +30,7 @@
 				</a>
 				<nav id="menu" class="menu">
 					<ul>
-						<li>
+						<li data-login-type="1">
 							<a href="index.html" class="">Dashboard</a>
 						</li>
 						<li>
@@ -42,8 +42,8 @@
 						<li>
 							<a href="recommendation.html">Recommendation</a>
 						</li>
-						<li class="active">
-							<a href="raw_values.html">Raw Values</a>
+						<li data-login-type="1" class="active">
+							<a href="raw_values.html">QAI Values</a>
 						</li>
 						<li class="log-out-menu">
 							<a href="/login.html">Logout</a>
@@ -131,5 +131,37 @@
 	<script src="js/pg_js/config.js"></script>
 	<script src="js/jquery.table2excel.js"></script>
 	<script src="js/pg_js/raw_values.js"></script>
+	<a data-toggle="modal" data-target="#modal_graph" id="lnkTickerMntRtn"></a>
+	<div id="modal_graph" class="modal fade" role="dialog" data-backdrop="static">
+		<div class="modal-dialog" style="max-width:100%;">
+			<div class="modal-content">
+				<div class="modal-body" style="max-height:450px;overflow: auto;">
+					<div class="row">
+						<div class="col-md-12">
+							<div style="overflow: auto;">
+								<table class="table table-bordered _ticker_buy_sell_tbl" border="1" style=" background:#fff;">
+									<thead>
+										<tr>
+											<th style="background-color: #e0dfdf;">
+												<div class="status font-bold" style="margin-bottom: 28px;">
+													<div class="status-title">Ticker Monthly % Returns</div>
+												</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn  btn-primary col-md-4" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
 </body>
 </html>

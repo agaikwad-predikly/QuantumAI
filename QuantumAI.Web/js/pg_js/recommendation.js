@@ -1,10 +1,18 @@
-﻿$(document).ready(function ($) {
+﻿
+var login_type = 0;
+$(document).ready(function ($) {
 
     "use strict";
-    if (localStorage.getItem("is_login") != 1) {
+    if (localStorage.getItem("is_login") == 0) {
         window.location.href = "/login.html"
     }
     else {
+    	$('#menu').find('li[data-login-type="1"]').show();
+    	if (localStorage.getItem("is_login") == 2) {
+    		$('#menu').find('li[data-login-type="1"]').hide();
+    	}
+    	login_type = localStorage.getItem("is_login");
+
         $('.page').show();
         $('.recc_dt_picker').datepicker({
             format: 'dd-M-yyyy',

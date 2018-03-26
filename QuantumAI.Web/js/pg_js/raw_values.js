@@ -1,7 +1,10 @@
 ﻿$(document).ready(function ($) {
 	"use strict";
-	if (localStorage.getItem("is_login") != 1) {
+	if (localStorage.getItem("is_login") == 0) {
 		window.location.href = "/login.html"
+	}
+	else if (localStorage.getItem("is_login") == 2) {
+		window.location.href = "/portfolio.html";
 	}
 	else {
 		$('#init_msg_div').show();
@@ -22,13 +25,15 @@
 			var $this = $(this);
 			$this.toggleClass('active').next('ul').toggleClass('active');
 		});
-
+		var cur_dt = new Date();
+		var lastdt = new Date((cur_dt.getFullYear() - 1), cur_dt.getMonth(), 1)
 		$('.dt_picker').datepicker({
 			format: "M-yyyy",
 			viewMode: "months",
 			minViewMode: "months",
 			autoclose: 'true'
-		}).datepicker("setDate", new Date());
+		}).datepicker("setDate", lastdt);
+
 
 		$('.dt_picker').closest('div').find('.fa-calendar').click(function () {
 			$(this).closest('div').find('.dt_picker').focus();
@@ -118,12 +123,12 @@
 						}
 						$.each(data, function (key, value) {
 							var i = 0;
-							var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left">' + value.ticker_symbol + ''
+							var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left"  style="cursor: pointer;" onclick="BindTickerMonthlyData(\'' + portoflio_dt + '\',\'' + value.ticker_id + '\')">' + value.ticker_symbol + ''
 											+ '<span class="tkr-fullname">' + value.ticker_name + '</span>'
 											+ '</div></td>'
 
 							for (i = 0; i < col.length ; i++) {
-								tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? value[col[i]] : '') + '</td>'
+								tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? parseFloat(value[col[i]]).toFixed(2) : '') + '</td>'
 							}
 
 							$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
@@ -137,3 +142,64 @@
 		}
 	}
 });
+
+
+
+function BindTickerMonthlyData(portfolio_date,  ticker_id) {
+	$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
+
+	$.blockUI();
+	var portoflio_from_dt = moment(portfolio_date).format("YYYY-MM-DD HH:mm:ss");
+	var to_portoflio_dt_full = moment(portfolio_date).add(11, 'M').toDate();
+	to_portoflio_dt_full = new Date(to_portoflio_dt_full.getFullYear(), to_portoflio_dt_full.getMonth() + 1, 0);
+
+	var portoflio_to_dt = moment(to_portoflio_dt_full).format("YYYY-MM-DD HH:mm:ss");
+	var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": $.api_base_url + "/simulation_actual_data_month?from_date=" + portoflio_from_dt + "&limit=12&ticker_id=" + ticker_id,
+		"method": "POST",
+		"contentType": 'application/json;charset=UTF-8',
+		"headers": {
+			"Content-Type": "application/json",
+			"Authorization": "AD3EDSFEF3EF23E123",
+		}
+	}
+
+	$.ajax(settings).done(function (response) {
+		if (response != undefined || response != '') {
+			var resp = jQuery.parseJSON(JSON.stringify(response));
+			if (resp.status_code == 200) {
+				var data = resp.data;
+				var columnIndex = 0;
+				var colcnt = 0
+				var total_gain = 0;
+				var jsonObj = [];
+				var col = [];
+				for (var key in data[0]) {
+					if (col.indexOf(key) === -1 && key != "value_date") {
+						col.push(key);
+					}
+				}
+				for (var i = 0; i < col.length; i++) {
+					$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace(/_/g, ' ') + '</div></div></th>');
+
+				}
+				$.each(data, function (key, value) {
+					var i = 0;
+					var tkrhtml = '<td><div class="left">' + value.value_date + '</div></td>'
+
+					for (i = 0; i < col.length ; i++) {
+						tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? (parseFloat(value[col[i]])).toFixed(2) : '') + ((value.value_date == 'Acc/Dcc') ? '%' : '') + '</td>'
+					}
+
+					$('._ticker_buy_sell_tbl tbody').append('<tr ' + ((value.value_date == 'Acc/Dcc') ? 'class="highlight"' : '') + '>' + tkrhtml + '</tr>')
+				});
+			}
+
+			$('#lnkTickerMntRtn').click();
+		}
+	}).always(function () {
+		$.unblockUI()
+	});
+}
