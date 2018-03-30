@@ -17,7 +17,7 @@ var login_type = 0;
 $(document).ready(function ($) {
 
 	"use strict";
-	if (localStorage.getItem("is_login") == 0) {
+	if (localStorage.getItem("is_login")==null || localStorage.getItem("is_login") == 0) {
 		window.location.href = "/login.html"
 	}
 	else {
@@ -228,7 +228,7 @@ $(document).ready(function ($) {
 							var columnIndex = $('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + "_" + portoflio_dt_full.getFullYear()).index();
 							if ($('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id) == undefined || $('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).length == 0) {
 
-								var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left" style="cursor: pointer;" onclick="BindTickerMonthlyData(\'' + from_portoflio_dt + '\',\'' + to_portoflio_dt + '\',\'' + value.ticker_id + '\')">' + value.ticker_symbol
+								var tkrhtml = '<td class="tkr_' + value.ticker_id + '" data-ticker="' + value.ticker_id + '"><div class="left" style="cursor: pointer;" onclick="BindTickerMonthlyData(\'' + from_portoflio_dt + '\',\'' + to_portoflio_dt + '\',\'' + value.ticker_id + '\',\'' + value.ticker_name + '\',\'' + value.ticker_symbol + '\')">' + value.ticker_symbol
 											+ '<span class="tkr-fullname">' + value.ticker_name + '</span>'
 											+ '</div><div class="right"><div class="right _tkr_yr_rtn"></div></td>'
 
@@ -238,7 +238,7 @@ $(document).ready(function ($) {
 								}
 								$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
 							}
-							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : '<div class="sim_text_buy_sell_status sell">S</div>') + " </div>");
+							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + " </div>");
 							if (value.percent_gain != null && value.percent_gain != '') {
 								total_gain = parseFloat($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-sum'));
 								colcnt = parseInt($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-colcnt'));
@@ -354,7 +354,7 @@ $(document).ready(function ($) {
 		}
 		function CalculateMonthlyReturn() {
 			var MjsonObj = [];
-			$('.buy_sell_tbl thead th').each(function () {
+			$('.buy_sell_tbl thead th:not(:first)').each(function () {
 				var item = {}
 				item["month"] = $(this).find('.status-title').html();
 				item["percent_gain"] = (isNaN(parseFloat($(this).find('._tkr_month_percent_gain').html()))) ? 0 : parseFloat($(this).find('._tkr_month_percent_gain').html());
@@ -378,9 +378,10 @@ $(document).ready(function ($) {
 });
 
 
-function BindTickerMonthlyData(from_date, to_date, ticker_id) {
+function BindTickerMonthlyData(from_date, to_date, ticker_id, ticker_name, ticker_symbol) {
 	if (login_type == 1) {
 		$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
+		$('#modal_graph .modal-title').html(ticker_name + "<small> (" + ticker_symbol + ")</small>")
 
 		$.blockUI();
 		var portoflio_from_dt = moment(from_date).format("YYYY-MM-DD HH:mm:ss");
@@ -413,7 +414,7 @@ function BindTickerMonthlyData(from_date, to_date, ticker_id) {
 						}
 					}
 					for (var i = 0; i < col.length; i++) {
-						$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace(/_/g, ' ') + '</div></div></th>');
+						$('._ticker_buy_sell_tbl thead tr').append('<th data-key="' + col[i] + '" ><div class="status font-14">	<div class="status-title text-center" style="text-transform:capitalize;">' + col[i].replace("USD_M", "<br>USD (M) ").replace(/_/g, ' ') + '</div></div></th>');
 
 					}
 					$.each(data, function (key, value) {
@@ -421,7 +422,7 @@ function BindTickerMonthlyData(from_date, to_date, ticker_id) {
 						var tkrhtml = '<td><div class="left">' + value.value_date + '</div></td>'
 
 						for (i = 0; i < col.length ; i++) {
-							tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? (parseFloat(value[col[i]])).toFixed(2) : '') + ((value.value_date == 'Acc/Dcc') ? '%' : '') + '</td>'
+							tkrhtml += '<td data-start="" data-end="">' + ((value[col[i]] != null) ? ((value.value_date == 'Acc/Dcc') ? ((parseFloat(value[col[i]])).toFixed(2) + '%') : (parseFloat(value[col[i]])).toFixed(2)) : '-')  + '</td>'
 						}
 
 						$('._ticker_buy_sell_tbl tbody').append('<tr ' + ((value.value_date == 'Acc/Dcc') ? 'class="highlight"' : '') + '>' + tkrhtml + '</tr>')

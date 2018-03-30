@@ -14,7 +14,7 @@ $menuTrigger.click(function (e) {
 	$this.toggleClass('active').next('ul').toggleClass('active');
 });
 
-
+$.ajaxSetup({ timeout: 120000 });
 $.ajaxQ = (function () {
 	var id = 0, Q = {};
 

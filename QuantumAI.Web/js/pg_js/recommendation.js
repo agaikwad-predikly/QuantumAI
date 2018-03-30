@@ -3,7 +3,7 @@ var login_type = 0;
 $(document).ready(function ($) {
 
     "use strict";
-    if (localStorage.getItem("is_login") == 0) {
+    if (localStorage.getItem("is_login") == null || localStorage.getItem("is_login") == 0) {
         window.location.href = "/login.html"
     }
     else {
