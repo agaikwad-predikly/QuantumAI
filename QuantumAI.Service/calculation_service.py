@@ -238,6 +238,30 @@ def calculate_bulk_ticker_fundamentals_details():
 			log.Error(e)
 		i+=1
 
+		
+def calculate_bulk_ticker_fundamentals_actual_values_details():
+	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+	i = 0
+	while i < len(tickers):
+		ticker_sym = tickers[i][1]
+		ticker_id = tickers[i][2]
+		try:
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			log.Error(ticker_sym + " - " + str(ticker_id) + "START")
+			indicator = db.call_procedure("insert_update_indicator_actual_value_data",[ticker_id])
+			log.Error(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+			print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+			if i>499 and i%500==0:
+				rtn = db.vaccum("ticker_indicator_value")
+				log.Error(ticker_sym + " - " + str(ticker_id) + "VACCUM COMPLETE")
+				print(ticker_sym + " - " + str(ticker_id) + "VACCUM  COMPLETE")
+			
+			
+		except Exception as e:
+			print(ticker_sym + " - " + str(ticker_id) + "Error")
+			log.Error(e)
+		i+=1
+
 def calculate_bulk_ticker_technical_details():
 	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 	i = 0
@@ -367,6 +391,7 @@ def predict_technical_ticker_indicator():
 			log.Error(e)
 			#print(e + "Error")
 
+calculate_bulk_ticker_fundamentals_actual_values_details()
 #calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
 #perform()
