@@ -1444,17 +1444,18 @@ font-lighter {
 .chosen-container {
 	width: 95% !important;
 }
+
 .chosen-container-multi .chosen-choices {
 	padding: .2rem 0.55rem;
-    font-size: 1rem;
-    line-height: 1.25;
-    color: #495057;
-    background-color: #fff;
-    background-image: none;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: .25rem;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	font-size: 1rem;
+	line-height: 1.25;
+	color: #495057;
+	background-color: #fff;
+	background-image: none;
+	background-clip: padding-box;
+	border: 1px solid rgba(0,0,0,.15);
+	border-radius: .25rem;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple,
@@ -1595,7 +1596,7 @@ font-lighter {
 		.dashboard-stat2 .progress-info .status .status-number {
 			float: right;
 			display: inline-block;
-			width: 66px;
+			max-width: 150px;
 			text-align: right;
 			overflow: hidden;
 		}
@@ -1639,13 +1640,13 @@ font-lighter {
 	font-weight: 500;
 	text-align: center;
 	vertical-align: bottom;
-    display: inline-block;
+	display: inline-block;
 	background-color: #c1c1c1;
 }
 
 
 	.text_buy_sell_status.buy,
-	.sim_text_buy_sell_status.buy  {
+	.sim_text_buy_sell_status.buy {
 		background-color: #228B22;
 	}
 
@@ -1852,7 +1853,7 @@ Due to the split circle of progress-left and progress right, we must use the ani
 	}
 
 	.circl-progress[data-percentage="60"] .progress-left .progress-bar {
-		animation: loading-1 linear forwards ;
+		animation: loading-1 linear forwards;
 		border-color: #39e239;
 	}
 
@@ -1862,7 +1863,7 @@ Due to the split circle of progress-left and progress right, we must use the ani
 	}
 
 	.circl-progress[data-percentage="70"] .progress-left .progress-bar {
-		animation: loading-2 linear forwards ;
+		animation: loading-2 linear forwards;
 		border-color: #39e239;
 	}
 
@@ -1958,5 +1959,5 @@ Due to the split circle of progress-left and progress right, we must use the ani
 
 
 tr.highlight {
-	background:#ddd;
+	background: #ddd;
 }

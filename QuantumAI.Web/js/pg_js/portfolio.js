@@ -48,7 +48,7 @@ $(document).ready(function ($) {
 		$("#btnExcelExport").click(function () {
 			if (is_request_complete == 1) {
 				if ($.ajaxQ.get_remaining_cnt() == 0) {
-					var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+					var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), "DD-MMM-YYYY").toDate();
 					var limit = $('#ddl_limit').val();
 					var indicator_type = $('#ddl_indicator').val();
 					var target_type = $('#ddl_target').val();
@@ -101,7 +101,7 @@ $(document).ready(function ($) {
 
 		$('#btnRecommend').click(function (e) {
 			e.preventDefault();
-			var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+			var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), "DD-MMM-YYYY").toDate();
 			var limit = $('#ddl_limit').val();
 			var indicator_type = $('#ddl_indicator').val();
 			var target_type = $('#ddl_target').val();
@@ -171,7 +171,7 @@ $(document).ready(function ($) {
 				var i = 1;
 				//for (i = 1; i < parseInt($("#ddl_no_of_month").val()) ; i++) {
 				var dt = moment(portoflio_dt_full).add(i, 'M').toDate();
-				var max_date =  moment(new Date("01-" + $('#portfolio_date').val())).add(parseInt($("#ddl_no_of_month").val()), 'M').toDate();
+				var max_date = moment("01-" + $('#portfolio_date').val(), "DD-MMM-YYYY").add(parseInt($("#ddl_no_of_month").val()), 'M').toDate();
 				
 				if (dt < max_date) {
 					BindMonthlyData(dt, indicator_type, target_type, strength, limit, adv_rule);

@@ -128,3 +128,23 @@ def simulation_actual_data_month():
 	else:
 		content = {'status': 'BAD REQUEST','status_code': '400', 'message' : 'Need parameter date, indicator_type, target_type, adv_weight, limit', 'data': None}#tickers}
 		return Response(response=json.dumps(content),status=200,mimetype='application/json')
+
+
+@routes.route("/recommendation_predict_month", methods = ['GET'])
+@auth.require_api_token
+def recommendation_predict_month():
+	params = request.args.to_dict()
+	if(params is not None and "date" in params and "indicator_type" in params and "target_type" in params and params["date"] is not None and params["indicator_type"] is not None and params["target_type"] is not None):
+		if (not "limit"  in params) or (params["limit"] is  None):
+			params["limit"] = 50
+		if ("adv_weight" not in params) or (params["adv_weight"] is  None):
+			params["adv_weight"] = 20 if(params["target_type"]==1) else 0
+		if ("adv_rule" not in params) or (params["adv_rule"] is  None):
+			params["adv_rule"] = 0 if(params["target_type"]==1) else 0
+		
+		tickers = db.call_procedure_with_header("get_mom_recommendation_prediction_details",[params["date"], params["indicator_type"],params["target_type"],params["adv_weight"],params["limit"], params["adv_rule"]])
+		content = {'status': 'SUCCESS','status_code': '200', 'message' : 'SUCCESS', 'data': tickers}
+		return Response(response=json.dumps(content),status=200,mimetype='application/json')
+	else:
+		content = {'status': 'BAD REQUEST','status_code': '400', 'message' : 'Need parameter date, indicator_type, target_type, adv_weight, limit', 'data': None}#tickers}
+		return Response(response=json.dumps(content),status=200,mimetype='application/json')

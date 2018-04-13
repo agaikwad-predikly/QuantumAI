@@ -2,45 +2,45 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Quantum AI Recommendation</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />
-    <link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css" />
-    <link rel="stylesheet" type="text/css" href="/css/animate.css" />
-    <link rel="stylesheet" type="text/css" href="/css/hamburgers.min.css" />
-    <link rel="stylesheet" type="text/css" href="/css/animsition.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/util.css" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker3.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<title>Quantum AI Recommendation</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" type="image/png" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />
+	<link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/animate.css" />
+	<link rel="stylesheet" type="text/css" href="/css/hamburgers.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/animsition.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/util.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker3.min.css" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 <body>
-    <div class="page" style="display:none;">
-        <header class="menu-header">
-            <div class="header-logo">
-                <img src="images/QALogo.png" />
-            </div>
-            <div class="container">
-                <a class="menu-link" href="#menu">
-                    <img src="images/menu.png" class="responsive-menu" />
-                </a>
-                <nav id="menu" class="menu">
-                    <ul>
+	<div class="page" style="display:none;">
+		<header class="menu-header">
+			<div class="header-logo">
+				<img src="images/QALogo.png" />
+			</div>
+			<div class="container">
+				<a class="menu-link" href="#menu">
+					<img src="images/menu.png" class="responsive-menu" />
+				</a>
+				<nav id="menu" class="menu">
+					<ul>
 						<li data-login-type="1">
 							<a href="index.html" class="">Dashboard</a>
 						</li>
-						<li>
-							<a href="portfolio.html">Portfolio</a>
+						<li class="active">
+							<a href="recommendation.html">Recommendation</a>
 						</li>
 						<li>
 							<a href="simulation.html">Simulation</a>
 						</li>
-						<li class="active">
-							<a href="recommendation.html">Recommendation</a>
+						<li>
+							<a href="portfolio.html">Portfolio</a>
 						</li>
 						<li data-login-type="1">
 							<a href="raw_values.html">QAI Values</a>
@@ -48,618 +48,295 @@
 						<li class="log-out-menu">
 							<a href="/login.html">Logout</a>
 						</li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-logout">
-                <a href="/login.html"><img src="images/logout.png" /></a>
-            </div>
-        </header>
-        <div class="recc-container page-content">
+					</ul>
+				</nav>
+			</div>
+			<div class="header-logout">
+				<a href="/login.html"><img src="images/logout.png" /></a>
+			</div>
+		</header>
+		<div class="page-content">
+			<div class="col-12 simulation-list">
+				<div class="row">
+					<div class="col-md-12 " style="padding-bottom:20px;">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4 datarange-group"><input type="text" name="date" class="dt_picker form-control" id="portfolio_date" value="" /><i class="fa fa-calendar"></i></div>
+									<div class="col-md-4">
+										<select class="form-control" id="ddl_no_of_month">
+											<option value="12" selected>12 Months</option>
+											<option value="24">24 Months</option>
+											<option value="36">36 Months</option>
+											<option value="48">48 Months</option>
+										</select>
+									</div>
+									<div class="col-md-4">
+										<select class="form-control" id="ddl_limit">
+											<option value="50" selected>Top 50</option>
+											<option value="100">Top 100</option>
+											<option value="150">Top 150</option>
+											<option value="200">Top 200</option>
+											<option value="250">Top 250</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="row">
+									<div class="col-md-4" style="display:none;">
+										<select class="form-control" id="ddl_indicator">
+											<option value="XF" selected>QAI ENGINE - EQUITY XF</option>
+										</select>
+									</div>
+									<div class="col-md-2 ">
+										<select class="form-control" id="ddl_target">
+											<option value="1" selected>BUY</option>
+											<option value="0">SHORT / SELL</option>
+										</select>
+									</div>
+									<div class="col-md-4">
+										<div class="row">
+											<div class="col-md-5">
+												<select class="form-control" id="ddl_adv_rule">
+													<option value="0" selected>AI-AR</option>
+													<option value="1">AI6-AR</option>
+												</select>
+											</div>
+											<div class="col-md-7">
+												<div class="input-group">
+													<span class="input-group-addon" id="spn_angle_sign"><i class="fa fa-angle-left" style="font-size: 18px;"></i>=</span>
+													<input type="number" name="" id="txtstrength" class="form-control" value="25" placeholder="Fundamental Strength" />
+													<span class="input-group-addon">AD</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="row">
+											<div class="col-md-8">
+												<button class="btn btn-info" id="btnRecommend">Simulate</button>
+											</div>
+											<div class="col-md-4 right  text-right">
+												<div class="right" style="padding: 7px 0 5px 0;">
+													<i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;" id="btnExcelExport"></i>
+													<i class="btn fa fa-file-pdf-o hide" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
+												</div>
+											</div>
+										</div>
+									</div>
 
-            <div class="row" id="_div_ticker_dtl">
-                <ul class="nav nav-tabs nav-tabs-vertical col-lg-2" id="model-tabs">
-                    <li>
-                        <a class="active" href="#a_tab" data-toggle="tab">
-                            <span></span>BUY
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#b_tab" data-toggle="tab">
-                            <span></span>SELL
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content col-lg-10">
-                    <div class="tab-pane active" id="a_tab">
-                        <div class="row">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row portfolio-tkr-items">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 hide">
+								<div class="dashboard-stat2 ">
+									<div class="display">
+										<div class="number">
+											<h3 class="font-green-sharp">
+												<span data-counter="counterup" data-value="7800">24.9</span>
+											</h3>
+											<small>Acc/Dec</small>
+										</div>
+										<div class="icon text-right font-24">
+											96.5%
+										</div>
+									</div>
+									<div class="progress-info clearfix">
+										<div class="status font-bold" style="margin-bottom: 28px;">
+											<div class="status-title positive"> <span class="number">133</span> BUYS </div>
+											<div class="status-number negative"> <span class="number">74</span> SELLS </div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								<div class="dashboard-stat2 buy-dtl top_buysell-dtl">
+									<div class="display">
+										<div class="number">
+											<h3 class="font-green-sharp ">
+												<span data-counter="counterup" class="positive top_tkr_header">TOP 5 Buys</span>
+											</h3>
+										</div>
+										<div class="icon">
+											<i class="fa fa-thumbs-up positive"></i>
+										</div>
+									</div>
+									<div class="progress-info clearfix">
 
-                            <div class="col-12 simulation-list">
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								<div class="dashboard-stat2 bottom_buysell-dtl bottom-dtl">
+									<div class="display">
+										<div class="number">
+											<h3 class="font-green-sharp ">
+												<span data-counter="counterup" class="bottom_tkr_header">BOTTOM 5 Buys</span>
+											</h3>
+										</div>
+										<div class="icon">
+											<i class="fa fa-thumbs-down"></i>
+										</div>
+									</div>
+									<div class="progress-info clearfix">
 
-                                <div class="row">
-                                    <div class="col-md-12 " style="padding-bottom:20px;">
-                                        <div class="row">
-                                            <div class="col-md-4 datarange-group"><input type="text" name="date" class="recc_dt_picker form-control" value="" /><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></div>
-                                            <div class="col-md-4">
-                                                <select class="form-control">
-                                                    <option value="1" selected>Top 50</option>
-                                                    <option value="2">Top 100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <button class="btn btn-info" id="btnRecommend">Recommend</button>
-                                                    </div>
-                                                    <div class="col-md-8 right  text-right">
-                                                        <div class="left" style="padding:5px; ">
-                                                            <i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;"></i>
-                                                            <i class="btn fa fa-file-pdf-o" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
-                                                        </div>
-                                                        <div class="btn-group btn-radio">
-                                                            <button type="button" class="btn btn-default active">XF</button>
-                                                            <button type="button" class="btn btn-default">XT</button>
-                                                            <button type="button" class="btn btn-default">XC</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 ">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp">
-                                                        <span data-counter="counterup" data-value="7800">24.9</span>
-                                                    </h3>
-                                                    <small>Acc/Dec</small>
-                                                </div>
-                                                <div class="icon text-right font-24">
-                                                    96.5%
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-bold" style="margin-bottom: 28px;">
-                                                    <div class="status-title positive"> <span class="number">133</span> BUYS </div>
-                                                    <div class="status-number negative"> <span class="number">74</span> SELLS </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 buy-dtl ">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp ">
-                                                        <span data-counter="counterup" class="positive">TOP 3 BUY's</span>
-                                                    </h3>
-                                                </div>
-                                                <div class="icon">
-                                                    <i class="fa fa-thumbs-up positive"></i>
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-14">
-                                                    <div class="status-title"> AAPL.O </div>
-                                                    <div class="status-number"> 95.01% </div>
-                                                    <div class="status-number"> 24.3 </div>
-                                                </div>
-                                                <div class="status font-14">
-                                                    <div class="status-title"> SWKS.O </div>
-                                                    <div class="status-number"> 65.00% </div>
-                                                    <div class="status-number"> 23.87 </div>
-                                                </div>
-                                                <div class="status  font-14">
-                                                    <div class="status-title"> FB.O </div>
-                                                    <div class="status-number"> 64.61% </div>
-                                                    <div class="status-number"> 24.13 </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 sell-dtl">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp ">
-                                                        <span data-counter="counterup" class="negative">BOTTOM 3 BUY's</span>
-                                                    </h3>
-                                                </div>
-                                                <div class="icon">
-                                                    <i class="fa fa-thumbs-down negative"></i>
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-14">
-                                                    <div class="status-title"> BABA.K </div>
-                                                    <div class="status-number"> 5.32% </div>
-                                                    <div class="status-number"> 22.3 </div>
-                                                </div>
-                                                <div class="status font-14">
-                                                    <div class="status-title"> MSFT.O </div>
-                                                    <div class="status-number"> 8.42% </div>
-                                                    <div class="status-number"> 21.3 </div>
-                                                </div>
-                                                <div class="status  font-14">
-                                                    <div class="status-title"> LNKD.K </div>
-                                                    <div class="status-number">8.25%</div>
-                                                    <div class="status-number"> 21.23 </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row portfolio-tkr-items">
-                                    <div class="col-md-9">
-                                        <table class="table table-bordered buy_sell_tbl" style=" background:#fff;">
-                                            <thead>
-                                                <tr>
-                                                    <th style="background-color: #e0dfdf;">Acc/Dec</th>
-                                                    <th>+Q1</th>
-                                                    <th>+Q2</th>
-                                                    <th>+Q3</th>
-                                                    <th>+Q4</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            AAPL.O
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Apple Inc</span>
-                                                        </div>
-                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td>
-                                                        <div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div>
-                                                    </td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;">
-                                                        <div class="clearfix">
-                                                            <div class="left">4.9</div>
-                                                            <div class="right">96%</div>
-                                                        </div>
-                                                        <div class="text_buy_sell_status sell">S</div>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            SWKS.O
-                                                            <span class="tkr-fullname"> Skyworks Solutions Inc</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.2</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            FB.O
-                                                            <span class="tkr-fullname"> Facebook Inc</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								<div class="dashboard-stat2 top_monthbuysell-dtl top_month-dtl">
+									<div class="display">
+										<div class="number">
+											<h3 class="font-green-sharp ">
+												<span data-counter="counterup" class="bottom_tkr_header">Top 5 Gain Months</span>
+											</h3>
+										</div>
+										<div class="icon">
+											<i class="fa fa-rocket"></i>
+										</div>
+									</div>
+									<div class="progress-info clearfix">
+										<div class="row">
+											<div class="col-8 monthly_returns">
 
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            BABA.K
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Alibaba Group Holding Ltd.</span>
-                                                        </div>
-                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            MSFT.O
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Microsoft Corp</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">4.34</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            LNKD.K
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Linkedln Corp</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">B</div></td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                    <div class="col-md-3 section-recommendation">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr><th colspan="2">Previous Removed Tickers</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">23.4</span>
-                                                        <span class="tkr-cprct">32.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp ">112.4</span>
-                                                        <span class="tkr-cprct">32.32%</span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="b_tab">
-                        <div class="row">
-
-                            <div class="col-12 simulation-list">
-
-                                <div class="row">
-                                    <div class="col-md-12 " style="padding-bottom:20px;">
-                                        <div class="row">
-                                            <div class="col-md-4 datarange-group"><input type="text" name="date" class="recc_dt_picker form-control" value="" /><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></div>
-                                            <div class="col-md-4">
-                                                <select class="form-control">
-                                                    <option value="1" selected>Top 50</option>
-                                                    <option value="2">Top 100</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <button class="btn btn-info" id="btnRecommend">Recommend</button>
-                                                    </div>
-                                                    <div class="col-md-8 right  text-right">
-                                                        <div class="left" style="padding:5px; ">
-                                                            <i class="btn fa fa-file-excel-o" style="font-size: 28px;color: green;padding: 0;margin: 0;margin-top: -5px;"></i>
-                                                            <i class="btn fa fa-file-pdf-o" style="font-size: 28px;color: red;padding: 0;margin: 0;margin-top: -5px;"></i>
-                                                        </div>
-                                                        <div class="btn-group btn-radio">
-                                                            <button type="button" class="btn btn-default active">XF</button>
-                                                            <button type="button" class="btn btn-default">XT</button>
-                                                            <button type="button" class="btn btn-default">XC</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 ">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp">
-                                                        <span data-counter="counterup" data-value="7800">24.9</span>
-                                                    </h3>
-                                                    <small>Acc/Dec</small>
-                                                </div>
-                                                <div class="icon text-right font-24">
-                                                    96.5%
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-bold" style="margin-bottom: 28px;">
-                                                    <div class="status-title positive"> <span class="number">13</span> BUYS </div>
-                                                    <div class="status-number negative"> <span class="number">74</span> SELLS </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 buy-dtl ">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp ">
-                                                        <span data-counter="counterup" class="positive">TOP 3 SELL's</span>
-                                                    </h3>
-                                                </div>
-                                                <div class="icon">
-                                                    <i class="fa fa-thumbs-up positive"></i>
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-14">
-                                                    <div class="status-title"> AAPL.O </div>
-                                                    <div class="status-number"> 95.01% </div>
-                                                    <div class="status-number"> 24.3 </div>
-                                                </div>
-                                                <div class="status font-14">
-                                                    <div class="status-title"> SWKS.O </div>
-                                                    <div class="status-number"> 65.00% </div>
-                                                    <div class="status-number"> 23.87 </div>
-                                                </div>
-                                                <div class="status  font-14">
-                                                    <div class="status-title"> FB.O </div>
-                                                    <div class="status-number"> 64.61% </div>
-                                                    <div class="status-number"> 24.13 </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                        <div class="dashboard-stat2 sell-dtl">
-                                            <div class="display">
-                                                <div class="number">
-                                                    <h3 class="font-green-sharp ">
-                                                        <span data-counter="counterup" class="negative">BOTTOM 3 SELL's</span>
-                                                    </h3>
-                                                </div>
-                                                <div class="icon">
-                                                    <i class="fa fa-thumbs-down negative"></i>
-                                                </div>
-                                            </div>
-                                            <div class="progress-info">
-                                                <div class="status font-14">
-                                                    <div class="status-title"> BABA.K </div>
-                                                    <div class="status-number"> 5.32% </div>
-                                                    <div class="status-number"> 22.3 </div>
-                                                </div>
-                                                <div class="status font-14">
-                                                    <div class="status-title"> MSFT.O </div>
-                                                    <div class="status-number"> 8.42% </div>
-                                                    <div class="status-number"> 21.3 </div>
-                                                </div>
-                                                <div class="status  font-14">
-                                                    <div class="status-title"> LNKD.K </div>
-                                                    <div class="status-number">8.25%</div>
-                                                    <div class="status-number"> 21.23 </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row portfolio-tkr-items">
-                                    <div class="col-md-9">
-                                        <table class="table table-bordered buy_sell_tbl" style=" background:#fff;">
-                                            <thead>
-                                                <tr>
-                                                    <th style="background-color: #e0dfdf;">Acc/Dec</th>
-                                                    <th>+Q1</th>
-                                                    <th>+Q2</th>
-                                                    <th>+Q3</th>
-                                                    <th>+Q4</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            AAPL.O
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Apple Inc</span>
-                                                        </div>
-                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td>
-                                                        <div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div>
-                                                    </td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;">
-                                                        <div class="clearfix">
-                                                            <div class="left">4.9</div>
-                                                            <div class="right">96%</div>
-                                                        </div>
-                                                        <div class="text_buy_sell_status sell">B</div>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            SWKS.O
-                                                            <span class="tkr-fullname"> Skyworks Solutions Inc</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.2</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            FB.O
-                                                            <span class="tkr-fullname"> Facebook Inc</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            BABA.K
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Alibaba Group Holding Ltd.</span>
-                                                        </div>
-                                                        <a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            MSFT.O
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Microsoft Corp</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">4.34</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>
-                                                        <div class="left">
-                                                            LNKD.K
-                                                            <span class="tkr-fullname"><i class="fa fa-star"></i> Linkedln Corp</span>
-                                                        </div><a class="right" data-toggle="modal" data-target="#modal_graph"><i class=" fa fa-line-chart" style="color: #0ba1c7;"></i></a>
-                                                    </td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td style="border-bottom: 2px solid #FF0000;background: #fbc2c2;"><div class="clearfix"><div class="left">2.9</div><div class="right">96%</div></div><div class="text_buy_sell_status sell">B</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                    <td><div class="clearfix"><div class="left">24.9</div><div class="right">96%</div></div><div class="text_buy_sell_status buy">S</div></td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                    <div class="col-md-3 section-recommendation">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr><th colspan="2">Previous Removed Tickers</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">23.4</span>
-                                                        <span class="tkr-cprct">32.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp">24.1</span>
-                                                        <span class="tkr-cprct">90.32%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>AAPL.O<span class="tkr-fullname">Apple Inc.</span></td>
-                                                    <td style="width: 120px;">
-                                                        <span class="tkr-cp ">112.4</span>
-                                                        <span class="tkr-cprct">32.32%</span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="container" style="height: 400px; min-width: 310px"></div>
-        <div class="footer">
-            <p>© 2018 Quantum AI. All rights reserved.</p>
-        </div>
-    </div>
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/animsition.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-datepicker.min.js"></script>
+											</div>
+											<div class="col-4">
+												<div class="circl-progress progress-110" id="month_rtn_progress" data-percentage="10">
+													<span class="progress-left">
+														<span class="progress-bar"></span>
+													</span>
+													<span class="progress-right">
+														<span class="progress-bar"></span>
+													</span>
+													<div class="progress-value">
+														<div>
+															1 / 12 M
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-9">
+								<div style="overflow: auto;  border: 1px solid #e9ecef;">
+									<table class="table table-bordered buy_sell_tbl" border="1" style=" background:#fff;">
+										<thead>
+											<tr>
+												<th style="background-color: #e0dfdf;">
+													<div class="status font-bold" style="margin-bottom: 28px;">
+														<div class="status-title">Month % Returns</div>
+														<div class="status-number"><span id="total_yrl_rtn"></span>%</div>
+													</div>
+												</th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+								</div>
+							</div>
+							<div class="col-md-3 section-recommendation">
+								<nav class="navbar navbar-default">
+									<div class="container-fluid">
+										<div class="navbar-header">
+											<a class="navbar-brand" href="#">Tickers</a>
+										</div>
+										<ul class="nav nav-tabs">
+											<li><a data-toggle="tab" class="active" href="#_tab-remove_ticker">Removed</a></li>
+											<li><a data-toggle="tab" href="#_tab-added_tickers">Added</a></li>
+										</ul>
+									</div>
+								</nav>
+								<div class="tab-content">
+									<div id="_tab-remove_ticker" class="tab-pane fade active show">
+										<table class="table table-bordered" id="_tbl_previous_removed_tkr">
+											<thead style="display: none;">
+												<tr><th colspan="2">Previous Removed Tickers</th></tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+									<div id="_tab-added_tickers" class="tab-pane fade">
+										<table class="table table-bordered" id="_tbl_newly_added_tkr">
+											<thead style="display: none;">
+												<tr><th colspan="2">Newly added Tickers</th></tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" id="init_msg_div">
+					<div style="min-height: 500px; text-align:center; width: 100%">
+						<h1 id="init_msg" style="text-align:center;vertical-align:middle; line-height: 350px;">Please click on simulate button to get recommendations</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<p>© 2018 Quantum AI. All rights reserved.</p>
+		</div>
+	</div>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/animsition.min.js"></script>
+	<script src="js/popper.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.blockUI.js"></script>
+	<script src="js/bootstrap-datepicker.min.js"></script>
+	<script src="js/moment.js"></script>
 	<script src="js/pg_js/common.js"></script>
-    <script src="js/pg_js/recommendation.js"></script>
-    <script src="js/highstock.js"></script>
+	<script src="js/pg_js/config.js"></script>
+	<script src="js/pg_js/recommendation.js"></script>
+	<script src="js/jquery.table2excel.js"></script>
+	<a data-toggle="modal" data-target="#modal_graph" id="lnkTickerMntRtn"></a>
+	<div id="modal_graph" class="modal fade" role="dialog" data-backdrop="static">
+		<div class="modal-dialog" style="max-width:100%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body" style="max-height:450px;overflow: auto;">
+					<div class="row">
+						<div class="col-md-12">
+							<div style="overflow: auto;">
+								<table class="table table-bordered _ticker_buy_sell_tbl" border="1" style=" background:#fff;">
+									<thead>
+										<tr>
+											<th style="background-color: #e0dfdf;">
+												<div class="status font-bold" style="margin-bottom: 28px;">
+													<div class="status-title">Ticker Monthly % Returns</div>
+												</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn  btn-primary col-md-4" data-dismiss="modal">Close</button>
+				</div>
+			</div>
 
+		</div>
+	</div>
 
-    <div id="modal_graph" class="modal fade" role="dialog" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div id="_buygraph-container" style="width: 100%;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn  btn-primary col-md-4" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 </body>
 </html>

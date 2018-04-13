@@ -78,7 +78,7 @@ $(document).ready(function ($) {
 
 		$("#btnExcelExport").click(function () {
 			if ($.ajaxQ.get_remaining_cnt() == 0) {
-				var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+				var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), 'DD-MMM-YYYY').toDate();
 				var limit = $('#ddl_limit').val();
 				var indicator_type = $('#ddl_indicator').val();
 				var strength = $('#txtstrength').val();
@@ -103,7 +103,7 @@ $(document).ready(function ($) {
 
 		$('#btnSimulate').click(function (e) {
 			e.preventDefault();
-			var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+			var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), 'DD-MMM-YYYY').toDate();
 			var limit = $('#ddl_limit').val();
 			var indicator_type = $('#ddl_indicator').val();
 			var ticker_id = $('#tickers-multiple').val();
@@ -225,7 +225,7 @@ $(document).ready(function ($) {
 						var jsonObj = [];
 
 						$.each(data, function (key, value) {
-							var portoflio_dt_full = new Date(value.value_date);
+							var portoflio_dt_full = moment(value.value_date, 'DD-MMM-YYYY').toDate();
 							var columnIndex = $('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + "_" + portoflio_dt_full.getFullYear()).index();
 							if ($('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id) == undefined || $('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).length == 0) {
 
@@ -312,7 +312,7 @@ $(document).ready(function ($) {
 						});
 
 
-						$('#total_yrl_rtn').html(month_total_gain.toFixed(2) + "%");
+						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
 						$('#_div_ticker_dtl').show();
 					}

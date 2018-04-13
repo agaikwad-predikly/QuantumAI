@@ -44,7 +44,7 @@
 				$('#_errmsg').removeClass('alert-danger');
 				$('#_errmsg').html('<strong>Success!</strong> Welcome Admin.');
 				localStorage.setItem("is_login", 1);
-				window.location.href = "index.html";
+				window.location.href = "recommendation.html";
 			}
 			else if ($('#_usrname').val() == 'demouser' && $('#_usrpass').val() == 'demouser') {
 				$('#_errmsg').show();
@@ -52,7 +52,7 @@
 				$('#_errmsg').removeClass('alert-danger');
 				$('#_errmsg').html('<strong>Success!</strong> Welcome User.');
 				localStorage.setItem("is_login", 2);
-				window.location.href = "index.html";
+				window.location.href = "recommendation.html";
 			}
 			else {
 				$('#_errmsg').show();

@@ -46,7 +46,7 @@
 
 		$("#btnExcelExport").click(function () {
 			if ($.ajaxQ.get_remaining_cnt() == 0) {
-				var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+				var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), "DD-MMM-YYYY").toDate();
 				var indicator_type = $('#ddl_indicator').val();
 				var strength = $('#txtstrength').val();
 				var filename = "Top_" + $('#portfolio_date').val() + "_raw_values_by_" + (($('#ddl_indicator').val() == 'XF') ? 'fundamental' : ($('#ddl_indicator').val() == 'XT') ? "technical" : 'fundamental_and_technical') + ".xls";
@@ -70,7 +70,7 @@
 
 		$('#btnSimulate').click(function (e) {
 			e.preventDefault();
-			var portoflio_dt_full = new Date("01-" + $('#portfolio_date').val());
+			var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), "DD-MMM-YYYY").toDate();
 			var indicator_type = $('#ddl_indicator').val();
 			var ddl_target = $('#ddl_target').val();
 			ResetBuySellTBL();
