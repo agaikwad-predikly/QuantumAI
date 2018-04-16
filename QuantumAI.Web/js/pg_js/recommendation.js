@@ -260,7 +260,7 @@ $(document).ready(function ($) {
 								}
 								$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
 							}
-							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.fundamental_strength != null) ? value.fundamental_strength : "")).attr('data-end', ((target_type == 1) ? ((value.pred_buy_fund_probability != null) ? ((value.pred_buy_fund_probability * 100).toFixed(2)) : '-') : ((target_type == 0) ? ((value.pred_short_sell_fund_probability != null) ? ((value.pred_short_sell_fund_probability * 100).toFixed(2)) : '-') : ''))).addClass((value.fundamental_strength > 0) ? 'buy' : ((value.fundamental_strength < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.fundamental_strength != null) ? ((value.fundamental_strength).toFixed(2)) : '-') + '</div><div class="right">' + ((target_type == 1) ? ((value.pred_buy_fund_probability != null) ? ((value.pred_buy_fund_probability * 100).toFixed(2) + "%") : '-') : ((target_type == 0) ? ((value.pred_short_sell_fund_probability != null) ? ((value.pred_short_sell_fund_probability * 100).toFixed(2) + "%") : '-') : '-')) + '</div></div><div class="left" style="margin-left: -11.75px;">' + ((target_type == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((target_type == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + '</div>');
+							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.fundamental_strength != null) ? value.fundamental_strength : "")).attr('data-end', ((target_type == 1) ? ((value.pred_buy_fund_probability != null) ? ((value.pred_buy_fund_probability * 100).toFixed(2)) : '-') : ((target_type == 0) ? ((value.pred_short_sell_fund_probability != null) ? ((value.pred_short_sell_fund_probability * 100).toFixed(2)) : '-') : ''))).addClass((value.fundamental_strength > 0) ? 'buy' : ((value.fundamental_strength < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.fundamental_strength != null) ? ((value.fundamental_strength).toFixed(2)) : '-') + '</div><div class="right">' + ((target_type == 1) ? ((value.pred_buy_fund_probability != null) ? ((value.pred_buy_fund_probability * 100).toFixed(2) + "%") : '-') : ((target_type == 0) ? ((value.pred_short_sell_fund_probability != null) ? ((value.pred_short_sell_fund_probability * 100).toFixed(2) + "%") : '-') : '-')) + '</div></div><div class="left" style="margin-left: -11.75px;">' + ((target_type == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((target_type == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + ((moment(value.value_date).toDate()<=new Date())?((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')): '') + '</div>');
 						});
 
 						if (total_gain != 0) {
@@ -384,10 +384,8 @@ $(document).ready(function ($) {
 				$('#month_rtn_progress').find('.progress-value div').html(((request_count) +1	) + " / " + parseInt($("#ddl_no_of_month").val()) + " M");
 			}
 		}
-
 	}
 });
-
 
 function BindTickerMonthlyData(portfolio_date, ticker_id, ticker_name, ticker_symbol) {
 	if (login_type == 1) {
