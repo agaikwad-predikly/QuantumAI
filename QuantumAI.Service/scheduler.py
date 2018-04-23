@@ -6,7 +6,7 @@ def job():
     sr.perform()
     cal_sr.perform()
 
-schedule.every().day.at("00:10").do(job)
+schedule.every().day.at("06:00").do(job)
 
 while 1:
     schedule.run_pending()

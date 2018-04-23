@@ -345,7 +345,7 @@ def predict_buy_ticker_indicator():
 					files = {'input': f}
 					r = requests.post(API_ENDPOINT, files=files)
 					if not r.json() is None:
-						print r.json()
+						print(r.json())
 						for data in r.json():
 							db.call_procedure("update_indicator_target_data",[data['ticker_id'], 0,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
 			except Exception as e:
@@ -404,7 +404,7 @@ def predict_technical_ticker_indicator():
 #calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
 #perform()
-predict_buy_ticker_indicator()
+#predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()
 #predict_short_sell_fund_ticker_indicator()
 #t = threading.Thread(target=predict_short_sell_fund_ticker_indicator)

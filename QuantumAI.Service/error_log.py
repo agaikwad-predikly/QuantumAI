@@ -1,7 +1,1 @@
-import logging
-logging.basicConfig(filename='ErrorLog.log', level=logging.DEBUG, 
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
-
-def Error(error):
-        logger.error(error)
+﻿import loggingfrom datetime import dateimport osimport os.path#logging.basicConfig(filename='ErrorLog.log', level=logging.DEBUG, # format='%(asctime)s %(levelname)s %(name)s %(message)s')#logger=logging.getLogger(__name__)def Error(error):	file_name = "ErrorLog"+date.today().strftime('%Y%m%d') + ".log";	if not os.path.isfile(os.getcwd() + "\\" + file_name):		logging.basicConfig(filename=file_name, level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')	logger=logging.getLogger(__name__)	logger.error(error)

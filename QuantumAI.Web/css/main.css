@@ -261,11 +261,11 @@ iframe {
 		height: 100%;
 		top: 0;
 		left: 0;
-		background: #5194e8d1;
+		/*background: #5194e8d1;
 		background: -webkit-linear-gradient(bottom, #5194e8d1, #bbf2ffed);
 		background: -o-linear-gradient(bottom, #5194e8d1, #bbf2ffed);
 		background: -moz-linear-gradient(bottom, #5194e8d1, #bbf2ffed);
-		background: linear-gradient(bottom, #5194e8d1, #bbf2ffed);
+		background: linear-gradient(bottom, #5194e8d1, #bbf2ffed);*/
 		opacity: 0.8;
 	}
 

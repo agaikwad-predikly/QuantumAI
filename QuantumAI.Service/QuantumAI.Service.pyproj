@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d8903b78-a168-421d-b17a-686e9bfa15ad</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>calculation_service.py</StartupFile>
+    <StartupFile>api_service.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -29,8 +29,14 @@
     <Compile Include="error_log.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="failed_log.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="get_ticker_details.py" />
     <Compile Include="helper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="mail_helper.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="scheduler.py">

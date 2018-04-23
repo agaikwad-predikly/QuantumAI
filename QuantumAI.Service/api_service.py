@@ -9,10 +9,24 @@ from dateutil.relativedelta import relativedelta
 import error_log as log
 import re
 import helper
-"""Eikon App ID
-"""
-ek.set_app_id('93D5C93060C3ECEAD451638')
+import os
+import time
 
+log.Error("started1")
+try:
+	"""Eikon App ID
+	"""
+	log.Error("started1")
+	ek.set_app_id('93D5C93060C3ECEAD451638')
+	
+	log.Error("started1")
+except ek.EikonError as e:
+	if(e.code == '401'):
+		StartEikon()
+	else:
+		log.Error(e)
+					 
+log.Error("started1")
 """
     Function to get ticker data for date. Here we get all tickers from Database and 
     and the data is got for individual tickers from the end for which the last job stopped for the ticker 
@@ -72,9 +86,13 @@ def get_eod_for_ticker_for_date(start_date, end_date, ticker_id, ticker_symbol):
 
 def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_symbol):
 	try:
-		indicator = db.call_procedure("get_api_details",[ticker_id])	
+		indicator = db.call_procedure("get_api_details",[ticker_id])
 		fy_indicators, fq_indicators = [],[]
 		i = 0
+		result = False
+		total_count= len(indicator)
+		success_count = 0
+		failed_count = 0
 		while i < len(indicator):
 			try:
 				last_date = indicator[i][7]
@@ -104,12 +122,11 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 
 						df = ek.get_data(instruments=[ticker_symbol], fields=[indicator[i][2], indicator[i][2] + ".periodenddate",indicator[i][2] + ".fperiod"],parameters=params,debug=True)
 						dt = pd.DataFrame(df[0], index=None)
-						try:
-							dt = dt[np.isfinite(dt[indicator_name])]
-						except Exception as e:
-							log.Error(e)
+						
 						df2 = pd.DataFrame(dt[dt.columns[0:]].apply(lambda x: '~'.join(x.dropna().astype(str).astype(str)),axis=1), index=None, columns=['data'])
-						save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'FQ', indicator_id);
+						save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'FQ', indicator_id)
+						result = True
+						success_count +=1
 						#if not dt.empty:
 						#	dt = dt.sort_values(by=['Period End Date'])
 						#	for index, row in dt.iterrows():
@@ -124,8 +141,15 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						#				period_qtr = re.sub("Q","",re.sub("FY\d{0,5}","",fperiod))
 						#			if pd.isnull(data_date) == False:
 						#				save_ticker_api_data(indicator_value, ticker_id, period_yr, period_qtr, 'FQ', indicator_name, indicator_id, data_date)
+					except ek.EikonError as e:
+						if(e.code == '401'):
+							StartEikon()
+						else:
+							log.Error(e)
+							failed_count +=1
 					except Exception as e:
 						log.Error(e)
+						failed_count+=1
 
 				elif indicator[i][3] == 'DL':
 					if end_duration is not None and end_duration > 0:
@@ -148,12 +172,15 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 								if (-j + step) > 0:
 									params['SDate'] =0
 							fields = [indicator[i][2],indicator[i][2] + ".Date"]
+							if indicator[i][6] is not None and indicator[i][6] != 'NULL':
+								params['Curn'] = indicator[i][6]
 							df = ek.get_data(ticker_symbol, fields, params, debug=True)
 							dt = pd.DataFrame(df[0], index=None)
-							dt = dt[np.isfinite(dt[indicator_name])]
 							dt = dt.drop_duplicates(subset=['Date'], keep=False)
 							df2 = pd.DataFrame(dt[dt.columns[0:]].apply(lambda x: '~'.join(x.dropna().astype(str).astype(str)),axis=1), index=None, columns=['data'])
-							save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'DL', indicator_id);
+							save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'DL', indicator_id)
+							result = True
+							success_count+=1
 							#if not dt.empty:
 							#	dt = dt.sort_values(by=['Date'])
 							#	for index, row in dt.iterrows():
@@ -161,8 +188,15 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							#		data_date = row['Date']
 							#		if pd.isnull(data_date) == False:
 							#			save_ticker_api_data(indicator_value, ticker_id, period_yrs, 0, 'DL',  indicator_name, indicator_id,data_date)
+						except ek.EikonError as e:
+							if(e.code == '401'):
+								StartEikon()
+							else:
+								log.Error(e)
+								failed_count +=1
 						except Exception as e:
 							log.Error(e)
+							failed_count+=1
 
 				elif indicator[i][3] == 'FY':
 					try:
@@ -179,9 +213,10 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							params['Curn'] = indicator[i][6]
 						df = ek.get_data(instruments=[ticker_symbol], fields=[indicator[i][2], indicator[i][2] + ".periodenddate",indicator[i][2] + ".fperiod"],parameters=params,debug=True)
 						dt = pd.DataFrame(df[0], index=None)
-						dt = dt[np.isfinite(dt[indicator_name])]
 						df2 = pd.DataFrame(dt[dt.columns[0:]].apply(lambda x: '~'.join(x.dropna().astype(str).astype(str)),axis=1), index=None, columns=['data'])
-						save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'FY', indicator_id);
+						save_ticker_api_bulk_data(df2['data'].tolist(), ticker_id, 'FY', indicator_id)
+						result = True
+						success_count+=1
                         #print(myarray)
                         #dt = pd.DataFrame(df[0])
 						#dt.columns=['ticker_symbol', 'indicator_value', 'data_date', 'period']
@@ -199,8 +234,15 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						#				period_yr = re.sub("FY","",fperiod)
 						#			if pd.isnull(data_date) == False:
 						#				save_ticker_api_data(indicator_value, ticker_id, period_yr, period_qtr, 'FY', indicator_name, indicator_id, data_date)
+					except ek.EikonError as e:
+						if(e.code == '401'):
+							StartEikon()
+						else:
+							log.Error(e)
+							failed_count +=1
 					except Exception as e:
 						log.Error(e)
+						failed_count+=1
 				elif indicator[i][3] == 'EX':
 					exchange = db.call_procedure("get_exchange_ticker_details",[ticker_id])	
 					k = 0
@@ -209,25 +251,50 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							df = ek.get_data(exchange[k][0], indicator[i][2],debug=True)
 							indicator_value = df[0][indicator_name][0]
 							save_ticker_api_data(indicator_value, exchange[k][2], 0, 0, indicator[i][3],  indicator_name, indicator_id, datetime.date.today())
+							result = True
+							success_count+=1
+						except ek.EikonError as e:
+							if(e.code == '401'):
+								StartEikon()
+							else:
+								log.Error(e)
+								failed_count +=1
 						except Exception as e:
 							log.Error(e)
+							failed_count+=1
 
 						k+=1
 				else:
-					df = ek.get_data(instruments=[ticker_symbol], fields=[indicator[i][2], indicator[i][2] + ".date"],debug=True)
-					indicator_value = df[0][indicator_name][0]
-					data_date = datetime.date.today();
 					try:
-						data_date = df[0]['Date'][0]
-					except Exception as e:    
+						df = ek.get_data(instruments=[ticker_symbol], fields=[indicator[i][2], indicator[i][2] + ".date"],debug=True)
+						indicator_value = df[0][indicator_name][0]
+						data_date = datetime.date.today()
+						try:
+							data_date = df[0]['Date'][0]
+						except Exception as e:    
+							log.Error(e)
+						save_ticker_api_data(indicator_value, ticker_id, 0, 0, indicator[i][3],  indicator_name, indicator_id, data_date)
+						result= True
+						success_count+=1
+					except ek.EikonError as e:
+						if(e.code == '401'):
+							StartEikon()
+						else:
+							log.Error(e)
+							failed_count +=1
+					except Exception as e:
 						log.Error(e)
-					save_ticker_api_data(indicator_value, ticker_id, 0, 0, indicator[i][3],  indicator_name, indicator_id, data_date)
-			except Exception as e:    
+						failed_count+=1
+			except Exception as e:
 				log.Error(e)
-
-			i+=1
+			if result:
+				i+=1
 	except Exception as e:
 		log.Error(e)
+		
+def StartEikon():
+	os.startfile(os.path.dirname(os.getenv('APPDATA')) + "\\Local\\Eikon API Proxy\\EikonAPIProxy.exe")
+	time.sleep(30)
 
 def save_ticker_data(df, ticker_id):
 	dt = pd.DataFrame(df)
