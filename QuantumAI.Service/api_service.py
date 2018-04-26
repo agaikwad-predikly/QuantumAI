@@ -11,22 +11,24 @@ import re
 import helper
 import os
 import time
+import failed_log as fl
+import mail_helper as mailservice
 
-log.Error("started1")
+
+	
 try:
 	"""Eikon App ID
 	"""
-	log.Error("started1")
+	
 	ek.set_app_id('93D5C93060C3ECEAD451638')
 	
-	log.Error("started1")
 except ek.EikonError as e:
 	if(e.code == '401'):
 		StartEikon()
 	else:
 		log.Error(e)
 					 
-log.Error("started1")
+
 """
     Function to get ticker data for date. Here we get all tickers from Database and 
     and the data is got for individual tickers from the end for which the last job stopped for the ticker 
@@ -46,7 +48,8 @@ def get_data_for_date(start_date,end_date):
 		ticker_id = tickers[i][2]
 		print("Job Start Date:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		print("API")
-		get_indicator_for_ticker_for_date(start_date,end_date, ticker_id, ticker_sym)
+		if get_indicator_for_ticker_for_date(start_date,end_date, ticker_id, ticker_sym) == False:
+			return False
 		print("Job End Date:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		i+=1
 
@@ -87,6 +90,8 @@ def get_eod_for_ticker_for_date(start_date, end_date, ticker_id, ticker_symbol):
 def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_symbol):
 	try:
 		indicator = db.call_procedure("get_api_details",[ticker_id])
+		eikon_proxy_failure_count=0
+		start_date=datetime.datetime.today()
 		fy_indicators, fq_indicators = [],[]
 		i = 0
 		result = False
@@ -105,6 +110,8 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 				else:
 					last_date = datetime.datetime.fromordinal(last_date.toordinal())
 				if indicator[i][3] == 'FQ':
+					period_year=0
+					period_quarter=0
 					try:
 						period = "FQ0"
 						quarter = helper.quarters_range(last_date, end_date)
@@ -147,10 +154,17 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						else:
 							log.Error(e)
 							failed_count +=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], last_date.year, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
+
 					except Exception as e:
+						if(e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+							StartEikon()
 						log.Error(e)
 						failed_count+=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], last_date.year, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
 
+					
+					
 				elif indicator[i][3] == 'DL':
 					if end_duration is not None and end_duration > 0:
 						end_date = end_date + timedelta(days=end_duration)
@@ -159,6 +173,8 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 					if(delta.days + 1 < step):
 						step = delta.days + 1
 					for j in range(delta.days + 1, -1, -step):
+						period_yrs=0
+						period_days=last_date
 						try:
 							period_days = last_date + timedelta(days=j)
 							period_yrs = period_days.year
@@ -194,9 +210,11 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							else:
 								log.Error(e)
 								failed_count +=1
+							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], period_yrs, 0,period_days, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
 						except Exception as e:
 							log.Error(e)
 							failed_count+=1
+							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], period_yrs, 0,period_days, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
 
 				elif indicator[i][3] == 'FY':
 					try:
@@ -206,7 +224,7 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							period = "FY" + str(end_duration)
 							edate = edate + end_duration
 						params = {'Period': period, "FRQ":"FY","SDate":"0"}
-						params['EDate'] = edate  * -1
+						params['EDate']		= edate  * -1
 						if indicator[i][5] > 0:
 							params['Scale'] = indicator[i][5]
 						if indicator[i][6] is not None and indicator[i][6] != 'NULL':
@@ -240,9 +258,13 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						else:
 							log.Error(e)
 							failed_count +=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3],last_date.year, 0,last_date, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
+
 					except Exception as e:
 						log.Error(e)
 						failed_count+=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3],last_date.year, 0,last_date, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
+
 				elif indicator[i][3] == 'EX':
 					exchange = db.call_procedure("get_exchange_ticker_details",[ticker_id])	
 					k = 0
@@ -255,13 +277,16 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							success_count+=1
 						except ek.EikonError as e:
 							if(e.code == '401'):
-								StartEikon()
+								if StartEikon()==False:
+									return False
 							else:
 								log.Error(e)
 								failed_count +=1
+							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
 						except Exception as e:
 							log.Error(e)
 							failed_count+=1
+							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
 
 						k+=1
 				else:
@@ -282,19 +307,37 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						else:
 							log.Error(e)
 							failed_count +=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
+
 					except Exception as e:
 						log.Error(e)
 						failed_count+=1
+						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.now().date(), start_date,  datetime.datetime.today(),e.message)
+
 			except Exception as e:
 				log.Error(e)
 			if result:
 				i+=1
+		status=0
+		if total_count==success_count:
+			status=1
+		else :
+			status=2
+		fl.save_job_status(1,ticker_id, status, 0,total_count,success_count,failed_count,datetime.date.today(),start_date,datetime.date.today())
+
 	except Exception as e:
 		log.Error(e)
 		
 def StartEikon():
-	os.startfile(os.path.dirname(os.getenv('APPDATA')) + "\\Local\\Eikon API Proxy\\EikonAPIProxy.exe")
-	time.sleep(30)
+	global eikon_proxy_failure_count
+	if  eikon_proxy_failure_count<3:
+		eikon_proxy_failure_count+=1
+		os.startfile(os.path.dirname(os.getenv('APPDATA')) + "\\Local\\Eikon API Proxy\\EikonAPIProxy.exe")
+		time.sleep(30)
+		return True
+	else :
+		mailservice.send_eikon_failure_mail()
+		return False
 
 def save_ticker_data(df, ticker_id):
 	dt = pd.DataFrame(df)
@@ -313,4 +356,6 @@ def save_ticker_api_data(api_value, ticker_id, period_yr, period_qtr, period_typ
 def save_ticker_api_bulk_data(data, ticker_id, period_type, api_id):
 	stocks = db.call_procedure("insert_update_api_data_bulk",[ticker_id, api_id, period_type, data])
 
+
+eikon_proxy_failure_count=0
 perform()
