@@ -13,6 +13,7 @@ import eikon as ek
 import os 
 import requests
 import threading
+import failed_log as fl
 
 def get_data_for_date(start_date,end_date):
 	tickers = db.call_procedure("get_ticker_details","")
@@ -39,10 +40,12 @@ def perform():
 
 def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_symbol):
 	try:
+		start_date=datetime.datetime.today()
 		indicator = db.call_procedure("get_indicator_details",[ticker_id])
 		i = 0
 		while i < len(indicator):
 			try:
+				cal_start_date=datetime.datetime.today()
 				last_date = indicator[i][4]
 				indicator_name = indicator[i][0]
 				indicator_id = indicator[i][1]
@@ -72,6 +75,7 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
 
 						except Exception as e:
 							log.Error(e)
+							fl.save_error_log_details(0, 2, ticker_id, indicator_id,period, last_date.year, 0,last_date, 1, 0, datetime.date.today(), cal_start_date, datetime.date.today(),e.message)
 					save_ticker_indicator_data_bulk(ticker_id, indicator_id, indicator[i][3], charlist)
 				elif period=="FQ":
 					if end_duration is not None and end_duration > 0:
@@ -97,6 +101,7 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
 								save_ticker_indicator_data_multiple(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, prev_q_start, prev_q_end)
 						except Exception as e:
 							log.Error(e)
+							fl.save_error_log_details(0, 2, ticker_id, indicator_id,period, period_yr, period_qtr,last_date, 1, 0, datetime.date.today(), cal_start_date, datetime.date.today(),e.message)
 						x+=1
 				elif period=="FY":
 					if end_duration is not None and end_duration > 0:
@@ -119,17 +124,22 @@ def get_indicator_for_ticker_for_date(start_date, end_date, ticker_id, ticker_sy
 								save_ticker_indicator_data_multiple(indicator_value, ticker_id, indicator[i][3],  indicator_name, indicator_id, prev_q_start, prev_q_end)
 						except Exception as e:    
 							log.Error(e)
+							fl.save_error_log_details(0, 2, ticker_id, indicator_id,period, period_yr, 0,last_date, 1, 0, datetime.date.today(), cal_start_date, datetime.date.today(),e.message)
 						x+=1
 
 			except Exception as e:
 				log.Error(e)
+				fl.save_error_log_details(0, 2, ticker_id, indicator_id,period, 0, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
+
 
 			i+=1
 	except Exception as e:
 		log.Error(e)
+		fl.save_error_log_details(0, 2, ticker_id, indicator_id,period, 0, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
 
 def CalculateFormula(formula, period, date, ticker_id, f_quater, f_year): 
 	try:
+		start_date=datetime.datetime.today()
 		params = re.findall(r'@\d{0,5}{#?[\D]?[\D]?[\D]?[\D]?[\D]?[+-]?\d+(?:\.\d+)?}',  formula)
 		if params:
 			params = set(params)
@@ -403,7 +413,7 @@ def predict_technical_ticker_indicator():
 #calculate_bulk_ticker_fundamentals_actual_values_details()
 #calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
-#perform()
+perform()
 #predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()
 #predict_short_sell_fund_ticker_indicator()
