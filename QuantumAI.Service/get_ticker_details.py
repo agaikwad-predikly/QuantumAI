@@ -408,6 +408,24 @@ def generate_ticker_sell_fundamental_newestimate_details_csv():
 				
 	except Exception as e:
 		print(e)
+
+
+def generate_ticker_future_percent_buy_fundamental_details_new_csv_without_target():
+	tickers = call_procedure("get_ticker_details_by_data_type","0")
+	i = 0
+	df = None
+	directory = os.path.dirname(os.path.realpath(__file__)) + "\\percent_buy_fundamental_new"
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+	while i < len(tickers):
+		ticker_sym = tickers[i][1]
+		ticker_id = tickers[i][2]
+		indicator = call_procedure("get_ticker_future_indicator_value_details_without_target",[ticker_id])
+		df = pd.DataFrame(indicator,columns=["ticker_id", "ticker_name" , "ticker_symbol" ,  "date" , "analyst_estimate_earning_per_share_high_quarterly" , "analyst_estimate_earning_per_share_mean_quarterly" , "analyst_estimate_gross_profit_margin_high_quarterly" , "analyst_estimate_gross_profit_margin_mean_quarterly" , "analyst_estimate_net_income_high_quarterly" , "analyst_estimate_net_income_mean_quarterly" , "analyst_estimate_revenue_high_quarterly" , "analyst_estimate_revenue_mean_quarterly" , "company_estimate_earning_per_share_mean_quarterly" , "company_estimate_gross_profit_margin_mean_quarterly" , "company_estimate_net_income_mean_quarterly" , "company_estimate_revenue_mean_quarterly" , "analyst_estimate_earning_per_share_high_annual" , "analyst_estimate_earning_per_share_mean_annual" , "analyst_estimate_gross_profit_margin_high_annual" , "analyst_estimate_gross_profit_margin_mean_annual" , "analyst_estimate_net_income_high_annual" , "analyst_estimate_net_income_mean_annual" , "analyst_estimate_revenue_high_annual" , "analyst_estimate_revenue_mean_annual" , "company_estimate_earning_per_share_mean_annual" , "company_estimate_gross_profit_margin_mean_annual" , "company_estimate_net_income_mean_annual" , "company_estimate_revenue_mean_annual" ])
+		df.to_csv(directory + "\\" + ticker_sym+".csv", index=False, encoding='utf-8')
+		i+=1
+	return directory
+
 #update_ticker_indicator_prediction()
 #generate_ticker__both_combined_details_csv()
 #generate_ticker_technical_details_csv()
@@ -415,4 +433,4 @@ def generate_ticker_sell_fundamental_newestimate_details_csv():
 #predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()
 #generate_ticker_future_sell_fundamental_details_csv()
-generate_ticker_sell_fundamental_newestimate_details_csv()
+generate_ticker_future_percent_buy_fundamental_details_new_csv_without_target()
