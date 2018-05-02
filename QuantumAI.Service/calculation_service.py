@@ -14,6 +14,7 @@ import os
 import requests
 import threading
 import failed_log as fl
+from pandas.io.json.normalize import json_normalize
 
 def get_data_for_date(start_date,end_date):
 	tickers = db.call_procedure("get_ticker_details","")
@@ -410,10 +411,44 @@ def predict_technical_ticker_indicator():
 			log.Error(e)
 			#print(e + "Error")
 
+
+def new_predict_short_sell_fund_ticker_indicator():
+		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\sell_fundamental_api_new"
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		while i < len(tickers):
+			ticker_sym = tickers[i][1]
+			ticker_id = tickers[i][2]
+			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+			indicator = db.call_procedure("get_ticker_future_indicator_value_details_with_target",[ticker_id])
+			df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name',	'ticker_symbol',	'target','date',	 "analyst_estimate_earning_per_share_high_quarterly","analyst_estimate_earning_per_share_mean_quarterly","analyst_estimate_gross_profit_margin_high_quarterly","analyst_estimate_gross_profit_margin_mean_quarterly","analyst_estimate_net_income_high_quarterly","analyst_estimate_net_income_mean_quarterly","analyst_estimate_revenue_high_quarterly","analyst_estimate_revenue_mean_quarterly","company_estimate_earning_per_share_mean_quarterly","company_estimate_gross_profit_margin_mean_quarterly","company_estimate_net_income_mean_quarterly","company_estimate_revenue_mean_quarterly","analyst_estimate_earning_per_share_high_annual","analyst_estimate_earning_per_share_mean_annual","analyst_estimate_gross_profit_margin_high_annual","analyst_estimate_gross_profit_margin_mean_annual","analyst_estimate_net_income_high_annual","analyst_estimate_net_income_mean_annual","analyst_estimate_revenue_high_annual","analyst_estimate_revenue_mean_annual","company_estimate_earning_per_share_mean_annual","company_estimate_gross_profit_margin_mean_annual","company_estimate_net_income_mean_annual","company_estimate_revenue_mean_annual"])
+			new_df = df
+			new_df = new_df.drop(columns=['target'])
+			if new_df is not None and len(new_df.index) > 0:	
+				new_df.to_csv(filename, index=False, encoding='utf-8')
+				API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/sell/R/valsell/json"
+				f =open(filename,'rb')
+				files = {'input': f}
+				r = requests.post(API_ENDPOINT, files=files)
+				try:
+					if not r.json() is None:
+						dt = json_normalize(r.json())
+						df['ml_target']=dt['newdata$PREDICTED']
+						df.to_csv(directory + "\\" + ticker_sym+"_complete.csv", index=False, encoding='utf-8')
+				except Exception as e:
+					log.Error(e)
+					#for data in r.json():
+					#	df['RESULT']=RESULT_df['RESULT']
+					#	df.to_csv(directory + "\\" + ticker_sym+".csv", index=False, encoding='utf-8')
+					#	i+=1
+		return directory
+
 #calculate_bulk_ticker_fundamentals_actual_values_details()
 #calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
-perform()
+#perform()
 #predict_buy_ticker_indicator()
 #predict_technical_ticker_indicator()
 #predict_short_sell_fund_ticker_indicator()
@@ -425,3 +460,4 @@ perform()
 
 #t = threading.Thread(target=predict_technical_ticker_indicator)
 #t.start()
+new_predict_short_sell_fund_ticker_indicator()

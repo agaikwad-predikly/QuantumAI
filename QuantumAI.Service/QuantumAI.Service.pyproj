@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d8903b78-a168-421d-b17a-686e9bfa15ad</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>api_service.py</StartupFile>
+    <StartupFile>mail_helper.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
