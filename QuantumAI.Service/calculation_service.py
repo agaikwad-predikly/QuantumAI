@@ -460,4 +460,5 @@ def new_predict_short_sell_fund_ticker_indicator():
 
 #t = threading.Thread(target=predict_technical_ticker_indicator)
 #t.start()
-new_predict_short_sell_fund_ticker_indicator()
+
+calculate_bulk_ticker_fundamentals_actual_values_details()
