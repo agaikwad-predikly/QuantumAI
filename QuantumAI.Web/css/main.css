@@ -1674,7 +1674,11 @@ font-lighter {
 		font-weight: 800;
 		background: #e9ecef;
 		color: #8c8b8b;
-		min-width: 300px;
+		min-width: 295px;
+	}
+
+	.buy_sell_tbl th:first-child{
+		min-width: 295px;
 	}
 
 .buy_sell_tbl th {

@@ -314,7 +314,21 @@ $(document).ready(function ($) {
 
 						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
+						if ($.fn.DataTable.isDataTable('.buy_sell_tbl')) {
+							$('.buy_sell_tbl').DataTable().destroy();
+						}
+
 						$('#_div_ticker_dtl').show();
+						$('.buy_sell_tbl').DataTable({
+							"order": [[0, "asc"]],
+							scrollY: "350px",
+							scrollX: true,
+							scrollCollapse: true,
+							paging: false,
+							fixedColumns: {
+								leftColumns: 1
+							}
+						});
 					}
 				}
 			}).always(function () {
