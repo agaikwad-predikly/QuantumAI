@@ -239,7 +239,7 @@ $(document).ready(function ($) {
 								}
 								$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
 							}
-							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + '<div class="" style="margin-left: 20px; display: inline-block;">' + (((value.pred_buy_fund_target == 1 || value.pred_short_sell_fund_target == 1) && (value.pred_fundamental_strength == 1)) ? ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) : '<div class="sim_text_buy_sell_status">-</div>') + (((value.pred_buy_fund_target == 1 || value.pred_short_sell_fund_target == 1) && (value.pred_fundamental_strength_ag == 1)) ? ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) : '<div class="sim_text_buy_sell_status">-</div>') + " </div></div>");
+							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + '<div class="" style="margin-left: 20px; display: inline-block;">' + (((value.pred_buy_fund_target == 1 || value.pred_short_sell_fund_target == 1) && (value.pred_fundamental_strength == 1)) ? ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) : '<div class="sim_text_buy_sell_status">-</div>') + " </div></div>");
 							if (value.percent_gain != null && value.percent_gain != '') {
 								total_gain = parseFloat($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-sum'));
 								colcnt = parseInt($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-colcnt'));
@@ -315,20 +315,21 @@ $(document).ready(function ($) {
 						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
 						if ($.fn.DataTable.isDataTable('.buy_sell_tbl')) {
+							$('.buy_sell_tbl').DataTable().clear();
 							$('.buy_sell_tbl').DataTable().destroy();
 						}
 
 						$('#_div_ticker_dtl').show();
-						$('.buy_sell_tbl').DataTable({
-							"order": [[0, "asc"]],
-							scrollY: "350px",
-							scrollX: true,
-							scrollCollapse: true,
-							paging: false,
-							fixedColumns: {
-								leftColumns: 1
-							}
-						});
+						//$('.buy_sell_tbl').DataTable({
+						//	"order": [[0, "asc"]],
+						//	scrollY: "350px",
+						//	scrollX: true,
+						//	scrollCollapse: true,
+						//	paging: false,
+						//	fixedColumns: {
+						//		leftColumns: 1
+						//	}
+						//}).fixedColumns().update();;
 					}
 				}
 			}).always(function () {

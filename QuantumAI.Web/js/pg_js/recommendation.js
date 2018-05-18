@@ -45,6 +45,10 @@ $(document).ready(function ($) {
 			ChangeStrength();
 		});
 
+		$('#ddl_adv_rule').change(function (e) {
+			ChangeStrength();
+		});
+
 		$("#btnExcelExport").click(function () {
 			if (is_request_complete == 1) {
 				if ($.ajaxQ.get_remaining_cnt() == 0) {
@@ -80,14 +84,20 @@ $(document).ready(function ($) {
 			if ($('#ddl_indicator').val() == 'XF' || $('#ddl_indicator').val() == 'XS') {
 				$("#txtstrength").removeAttr("disabled");
 
-				$('#ddl_adv_rule').val("0");
 				$('#ddl_adv_rule').removeAttr("disabled");
-				if ($('#ddl_target').val() == "1") {
-					$('#txtstrength').val("25");
+				if ($('#ddl_adv_rule').val() == "0") {
+					$('#txtstrength').val("-");
+					$('#txtstrength').attr("disabled", "disabled");
 					$('#spn_angle_sign').find('i').removeClass('fa-angle-left').addClass('fa-angle-right');
 				} else {
-					$('#txtstrength').val("0");
-					$('#spn_angle_sign').find('i').removeClass('fa-angle-right').addClass('fa-angle-left');
+					$('#txtstrength').removeAttr("disabled");
+					if ($('#ddl_target').val() == "1") {
+						$('#txtstrength').val("25");
+						$('#spn_angle_sign').find('i').removeClass('fa-angle-left').addClass('fa-angle-right');
+					} else {
+						$('#txtstrength').val("0");
+						$('#spn_angle_sign').find('i').removeClass('fa-angle-right').addClass('fa-angle-left');
+					}
 				}
 			}
 			else {
@@ -107,7 +117,9 @@ $(document).ready(function ($) {
 			var target_type = $('#ddl_target').val();
 			var strength = $('#txtstrength').val();
 			var adv_rule = $('#ddl_adv_rule').val();
-
+			if (strength == "-") {
+				strength = "0";
+			}
 			ResetBuySellTBL();
 			$.blockUI();
 			inst = setInterval(change, 3000);
