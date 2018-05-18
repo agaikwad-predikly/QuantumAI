@@ -77,7 +77,7 @@ $(document).ready(function ($) {
 		});
 
 		function ChangeStrength() {
-			if ($('#ddl_indicator').val() == 'XF' || $('#ddl_indicator').val() == 'XS') {
+		    if ($('#ddl_indicator').val() == 'XF' || $('#ddl_indicator').val() == 'XS' || $('#ddl_indicator').val() == 'XMS' || $('#ddl_indicator').val() == 'XM') {
 				$("#txtstrength").removeAttr("disabled");
 
 				$('#ddl_adv_rule').val("0");

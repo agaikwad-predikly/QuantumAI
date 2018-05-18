@@ -323,7 +323,7 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 			status=1
 		else :
 			status=2
-		fl.save_job_status(1,ticker_id, status, 0,total_count,success_count,failed_count,datetime.date.today(),start_date,datetime.date.today())
+		fl.save_job_status(0,1,ticker_id, status, 0,total_count,success_count,failed_count,datetime.date.today(),start_date,datetime.date.today())
 
 	except Exception as e:
 		log.Error(e)
