@@ -83,6 +83,9 @@
 			$('.portfolio-tkr-items').hide();
 			$('#init_msg_div').show();
 			$('#init_msg').hide();
+			if ($.fn.DataTable.isDataTable('.buy_sell_tbl')) {
+				$('.buy_sell_tbl').DataTable().destroy();
+			}
 			$('.buy_sell_tbl').empty();
 			$('#_div_ticker_dtl').hide();
 			$('.buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Tickers</div></div></th></tr></thead><tbody>');
@@ -134,6 +137,18 @@
 							$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
 						});
 						$('#_div_ticker_dtl').show();
+						$('.buy_sell_tbl').DataTable({
+							"paging":   false,
+							"ordering": false,
+							"info": false,
+							"searching": false,
+							scrollY: "500px",
+							scrollX: true,
+							scrollCollapse: true,
+							fixedColumns: {
+								leftColumns: 1
+							}
+						});
 					}
 				}
 			}).always(function () {

@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" type="image/png" href="favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	<link href="css/jquery.dataTables.css" rel="stylesheet" />
 	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" type="text/css" href="/fonts/Linearicons-Free-v1.0.0/icon-font.min.css" />
 	<link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css" />
@@ -100,13 +101,15 @@
 											<div class="col-md-5">
 												<select class="form-control" id="ddl_adv_rule">
 													<option value="0" selected>XM</option>
-													<option value="1">AI6-AR</option>
+													<option value="2" selected>XM1</option>
+													<option value="1">AI6-AR (XM)</option>
+													<option value="3">AI6-AR (XM1)</option>
 												</select>
 											</div>
 											<div class="col-md-7">
 												<div class="input-group">
 													<span class="input-group-addon" id="spn_angle_sign"><i class="fa fa-angle-left" style="font-size: 18px;"></i>=</span>
-													<input type="text" name="" id="txtstrength" class="form-control" value="25" placeholder="Fundamental Strength" />
+													<input type="text" name="" id="txtstrength" class="form-control" value="20" placeholder="Fundamental Strength" />
 													<span class="input-group-addon">AD</span>
 												</div>
 											</div>
@@ -231,7 +234,7 @@
 						<div class="row">
 							<div class="col-md-9">
 								<div style="overflow: auto;  border: 1px solid #e9ecef;">
-									<table class="table table-bordered buy_sell_tbl" border="1" style=" background:#fff;">
+									<table class="table table-bordered buy_sell_tbl" id="buy_sell_tbl" border="1" style=" background:#fff;">
 										<thead>
 											<tr>
 												<th style="background-color: #e0dfdf;">
@@ -302,6 +305,9 @@
 	<script src="js/pg_js/config.js"></script>
 	<script src="js/pg_js/recommendation.js"></script>
 	<script src="js/jquery.table2excel.js"></script>
+
+	<script src="js/jquery.dataTables.min.js"></script>
+	<script src="js/dataTables.fixedColumns.js"></script>
 	<a data-toggle="modal" data-target="#modal_graph" id="lnkTickerMntRtn"></a>
 	<div id="modal_graph" class="modal fade" role="dialog" data-backdrop="static">
 		<div class="modal-dialog" style="max-width:100%;">

@@ -78,6 +78,10 @@ $(document).ready(function ($) {
 
 		$("#btnExcelExport").click(function () {
 			if ($.ajaxQ.get_remaining_cnt() == 0) {
+				if ($.fn.DataTable.isDataTable('#buy_sell_tbl')) {
+						$('#buy_sell_tbl').DataTable().destroy();
+					}
+
 				var portoflio_dt_full = moment("01-" + $('#portfolio_date').val(), 'DD-MMM-YYYY').toDate();
 				var limit = $('#ddl_limit').val();
 				var indicator_type = $('#ddl_indicator').val();
@@ -95,6 +99,19 @@ $(document).ready(function ($) {
 				});
 
 				$('.buy_sell_tbl').html(html);
+				
+					$('#buy_sell_tbl').DataTable({
+						"paging": false,
+						"ordering": false,
+						"info": false,
+						"searching": false,
+						scrollY: "500px",
+						scrollX: true,
+						scrollCollapse: true,
+						fixedColumns: {
+							leftColumns: 1
+						}
+					});
 			}
 			else {
 				alert("Please wait till all months data is downloaded.");
@@ -130,17 +147,14 @@ $(document).ready(function ($) {
 		function ChangeStrength() {
 			if ($('#ddl_indicator').val() == 'XF' || $('#ddl_indicator').val() == 'XS') {
 				$("#txtstrength").removeAttr("disabled");
-
 				$('#ddl_adv_rule').val("0");
 				$('#ddl_adv_rule').removeAttr("disabled");
-
 			}
 			else {
 				$('#txtstrength').val("0");
 				$('#txtstrength').attr("disabled", "disabled");
 				$('#ddl_adv_rule').val("0");
 				$('#ddl_adv_rule').attr("disabled", "disabled");
-
 			}
 		}
 
@@ -188,6 +202,9 @@ $(document).ready(function ($) {
 			$('.top_monthbuysell-dtl').find('.bottom_tkr_header').html('Top 5 Gain Months');
 			$('#month_rtn_progress').attr('data-percentage', 10);
 			$('#month_rtn_progress').find('.progress-value div').html("1 / " + $("#ddl_no_of_month").val() + " M");
+			if ($.fn.DataTable.isDataTable('.buy_sell_tbl')) {
+				$('.buy_sell_tbl').DataTable().destroy();
+			}
 			$('.buy_sell_tbl').empty();
 			$('#_div_ticker_dtl').hide();
 			$('.top_buysell-dtl .progress-info').empty();
@@ -239,7 +256,7 @@ $(document).ready(function ($) {
 								}
 								$('.buy_sell_tbl tbody').append('<tr>' + tkrhtml + '</tr>')
 							}
-							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + '<div class="" style="margin-left: 20px; display: inline-block;">' + (((value.pred_buy_fund_target == 1 || value.pred_short_sell_fund_target == 1) && (value.pred_fundamental_strength == 1)) ? ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) : '<div class="sim_text_buy_sell_status">-</div>') + " </div></div>");
+							$('.buy_sell_tbl tbody').find('td.tkr_' + value.ticker_id).closest('tr').find('td').eq(columnIndex).attr('data-start', ((value.f_close_price != null) ? value.f_close_price : "")).attr('data-end', ((value.l_close_price != null) ? value.l_close_price : "")).addClass((value.percent_gain > 0) ? 'buy' : ((value.percent_gain < 0) ? 'sell' : '')).html('<div class="clearfix"><div class="left">' + ((value.percent_gain != null) ? ((value.percent_gain).toFixed(2) + "%") : '-') + '</div></div><div class="" style="margin-left: -11.75px;">' + ((value.pred_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : ((value.pred_short_sell_fund_target == 0 || value.pred_buy_fund_target == 0) ? '<div class="sim_text_buy_sell_status">N</div>' : '<div class="sim_text_buy_sell_status">-</div>'))) + ((value.pred_xm_buy_fund_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_xm_short_sell_fund_target == 1) ? '<div class="sim_text_buy_sell_status sell">S</div>' : ((value.pred_xm_short_sell_fund_target == 0 || value.pred_xmo_buy_fund_target == 0) ? '<div class="sim_text_buy_sell_status">N</div>' : '<div class="sim_text_buy_sell_status">-</div>'))) + '<div class="" style="margin-left: 20px; display: inline-block;">' + ((value.pred_fundamental_strength == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_fundamental_strength == 2) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">N</div>')) + ' </div><div class="" style="margin-left: 20px; display: inline-block;">' + ((value.pred_tech_target == 1) ? '<div class="sim_text_buy_sell_status buy">B</div>' : ((value.pred_tech_target == 0) ? '<div class="sim_text_buy_sell_status sell">S</div>' : '<div class="sim_text_buy_sell_status">-</div>')) + "</div></div>");
 							if (value.percent_gain != null && value.percent_gain != '') {
 								total_gain = parseFloat($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-sum'));
 								colcnt = parseInt($('.buy_sell_tbl thead').find('th.head_mon_' + portoflio_dt_full.getMonth() + '_' + portoflio_dt_full.getFullYear()).find('._tkr_month_percent_gain').attr('data-colcnt'));
@@ -283,7 +300,9 @@ $(document).ready(function ($) {
 								return x;
 							});
 							for (var index = 0; index < jsonObj.length; ++index) {
-								$('.buy_sell_tbl tbody').find('td.tkr_' + jsonObj[index].ticker_id).find('._tkr_yr_rtn').html(jsonObj[index].percent_gain.toFixed(2) + '%');
+								if (jsonObj[index].percent_gain != null && jsonObj[index].percent_gain != undefined) {
+									$('.buy_sell_tbl tbody').find('td.tkr_' + jsonObj[index].ticker_id).find('._tkr_yr_rtn').html(jsonObj[index].percent_gain.toFixed(2) + '%');
+								}
 							}
 							$('.bottom_buysell-dtl .progress-info').empty();
 							$('.top_buysell-dtl .progress-info').empty();
@@ -314,22 +333,21 @@ $(document).ready(function ($) {
 
 						$('#total_yrl_rtn').html(month_total_gain.toFixed(2));
 						CalculateMonthlyReturn();
-						if ($.fn.DataTable.isDataTable('.buy_sell_tbl')) {
-							$('.buy_sell_tbl').DataTable().clear();
-							$('.buy_sell_tbl').DataTable().destroy();
-						}
+						
 
 						$('#_div_ticker_dtl').show();
-						//$('.buy_sell_tbl').DataTable({
-						//	"order": [[0, "asc"]],
-						//	scrollY: "350px",
-						//	scrollX: true,
-						//	scrollCollapse: true,
-						//	paging: false,
-						//	fixedColumns: {
-						//		leftColumns: 1
-						//	}
-						//}).fixedColumns().update();;
+						$('.buy_sell_tbl').DataTable({
+							"paging":   false,
+							"ordering": false,
+							"info": false,
+							"searching": false,
+							scrollY: "500px",
+							scrollX: true,
+							scrollCollapse: true,
+							fixedColumns: {
+								leftColumns: 1
+							}
+						});
 					}
 				}
 			}).always(function () {

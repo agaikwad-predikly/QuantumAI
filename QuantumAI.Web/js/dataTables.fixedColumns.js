@@ -1214,27 +1214,27 @@ $.extend( FixedColumns.prototype , {
 			/* Add in the tbody elements, cloning form the master table */
 			$('>tbody>tr', that.dom.body).each( function (z) {
 				var i = that.s.dt.oFeatures.bServerSide===false ?
-					that.s.dt.aiDisplay[ that.s.dt._iDisplayStart+z ] : z;
-				var aTds = that.s.dt.aoData[ i ].anCells || $(this).children('td, th');
+					that.s.dt.aiDisplay[that.s.dt._iDisplayStart + z] : z;
+				if (that.s.dt.aoData[i] != undefined) {
+					var aTds = that.s.dt.aoData[i].anCells || $(this).children('td, th');
 
-				var n = this.cloneNode(false);
-				n.removeAttribute('id');
-				n.setAttribute( 'data-dt-row', i );
+					var n = this.cloneNode(false);
+					n.removeAttribute('id');
+					n.setAttribute('data-dt-row', i);
 
-				for ( iIndex=0 ; iIndex<aiColumns.length ; iIndex++ )
-				{
-					iColumn = aiColumns[iIndex];
+					for (iIndex = 0 ; iIndex < aiColumns.length ; iIndex++) {
+						iColumn = aiColumns[iIndex];
 
-					if ( aTds.length > 0 )
-					{
-						nClone = $( aTds[iColumn] ).clone(true, true)[0];
-						nClone.removeAttribute( 'id' );
-						nClone.setAttribute( 'data-dt-row', i );
-						nClone.setAttribute( 'data-dt-column', dt.oApi._fnVisibleToColumnIndex( dt, iColumn ) );
-						n.appendChild( nClone );
+						if (aTds.length > 0) {
+							nClone = $(aTds[iColumn]).clone(true, true)[0];
+							nClone.removeAttribute('id');
+							nClone.setAttribute('data-dt-row', i);
+							nClone.setAttribute('data-dt-column', dt.oApi._fnVisibleToColumnIndex(dt, iColumn));
+							n.appendChild(nClone);
+						}
 					}
+					nBody.appendChild(n);
 				}
-				nBody.appendChild( n );
 			} );
 		}
 		else
