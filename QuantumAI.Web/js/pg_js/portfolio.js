@@ -15,6 +15,8 @@ $(document).ready(function ($) {
 		$('#menu').find('li[data-login-type="1"]').show();
 		if (localStorage.getItem("is_login") == 2) {
 			$('#menu').find('li[data-login-type="1"]').hide();
+			$('#ddl_indicator option[value="XS"]').remove();
+			$('#ddl_indicator option[value="XF"]').remove();
 		}
 		login_type = localStorage.getItem("is_login");
 		$('#init_msg_div').show();

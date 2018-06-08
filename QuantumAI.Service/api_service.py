@@ -151,14 +151,16 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 					except ek.EikonError as e:
 						if(e.code == '401'):
 							StartEikon()
+							i = i -1
 						else:
 							log.Error(e)
 							failed_count +=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], last_date.year, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
 
 					except Exception as e:
-						if(e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+						if(hasattr(e, 'message') and  e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
 							StartEikon()
+							i = i -1
 						log.Error(e)
 						failed_count+=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], last_date.year, 0,last_date, 1, 0, datetime.date.today(), start_date, datetime.date.today(),e.message)
@@ -207,11 +209,15 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 						except ek.EikonError as e:
 							if(e.code == '401'):
 								StartEikon()
+								i = i -1
 							else:
 								log.Error(e)
 								failed_count +=1
 							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], period_yrs, 0,period_days, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
 						except Exception as e:
+							if(hasattr(e, 'message') and  e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+								StartEikon()
+								i = i -1
 							log.Error(e)
 							failed_count+=1
 							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], period_yrs, 0,period_days, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
@@ -255,12 +261,16 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 					except ek.EikonError as e:
 						if(e.code == '401'):
 							StartEikon()
+							i = i -1
 						else:
 							log.Error(e)
 							failed_count +=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3],last_date.year, 0,last_date, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
 
 					except Exception as e:
+						if(hasattr(e, 'message') and  e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+							StartEikon()
+							i = i -1
 						log.Error(e)
 						failed_count+=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3],last_date.year, 0,last_date, 1, 0, datetime.datetime.today(), start_date, datetime.datetime.now(),e.message)
@@ -279,11 +289,16 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 							if(e.code == '401'):
 								if StartEikon()==False:
 									return False
+								else:
+									i = i -1
 							else:
 								log.Error(e)
 								failed_count +=1
 							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
 						except Exception as e:
+							if(hasattr(e, 'message') and  e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+								StartEikon()
+								i = i -1
 							log.Error(e)
 							failed_count+=1
 							fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
@@ -304,20 +319,23 @@ def get_indicator_for_ticker_for_date(start_date, p_end_date, ticker_id, ticker_
 					except ek.EikonError as e:
 						if(e.code == '401'):
 							StartEikon()
+							i = i -1
 						else:
 							log.Error(e)
 							failed_count +=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.today(), start_date,  datetime.datetime.today(),e.message)
 
 					except Exception as e:
+						if(hasattr(e, 'message') and  e.message == "Invalid URL 'None': No schema supplied. Perhaps you meant http://None?"):
+							StartEikon()
+							i = i -1
 						log.Error(e)
 						failed_count+=1
 						fl.save_error_log_details(0, 1, ticker_id, indicator_id,indicator[i][3], 0, 0,0, 1, retry_count, datetime.datetime.now().date(), start_date,  datetime.datetime.today(),e.message)
 
 			except Exception as e:
 				log.Error(e)
-			if result:
-				i+=1
+			i+=1
 		status=0
 		if total_count==success_count:
 			status=1
