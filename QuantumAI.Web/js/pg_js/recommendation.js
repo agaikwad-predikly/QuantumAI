@@ -438,7 +438,7 @@ $(document).ready(function ($) {
 
 function BindTickerMonthlyData(portfolio_date, ticker_id, ticker_name, ticker_symbol) {
 	if (login_type == 1) {
-		$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold" style="margin-bottom: 28px;"><div class="status-title left" style="margin-top: 6px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
+		$('._ticker_buy_sell_tbl').html('<thead><tr><th style="background-color: #e0dfdf;"><div class="status font-bold"><div class="status-title left" style="margin-top: 6px; margin-bottom: 8px;">Ticker Monthly % Returns</div></div></th></tr></thead><tbody>');
 
 		$.blockUI();
 		var portoflio_from_dt = moment(portfolio_date).format("YYYY-MM-DD HH:mm:ss");
@@ -503,10 +503,10 @@ function BindTickerMonthlyData(portfolio_date, ticker_id, ticker_name, ticker_sy
 											col_value = ((value.value_date == 'Acc/Dcc') ? ((parseFloat(value[col[i]])).toFixed(2) + '%') : (parseFloat(value[col[i]])).toFixed(4));
 										}
 
-										tkrhtml += '<td style="padding: .5rem;font-size: 14px;" data-start="" data-end="">' + ((value[col[i]] != null) ? col_value : '-') + '</td>'
+										tkrhtml += '<td style="max-width:160px;padding: .5rem;font-size: 14px;" data-start="" data-end="">' + ((value[col[i]] != null) ? col_value : '-') + '</td>'
 									}
 								} else {
-									tkrhtml += '<td style="padding: .5rem;font-size: 14px;" data-start="" data-end="">' + ((value[col[i]] != null) ? ((value.value_date == 'Acc/Dcc') ? ((parseFloat(value[col[i]])).toFixed(2) + '%') : (parseFloat(value[col[i]])).toFixed(4)) : '-') + '</td>'
+									tkrhtml += '<td style="max-width:160px;padding: .5rem;font-size: 14px;" data-start="" data-end="">' + ((value[col[i]] != null) ? ((value.value_date == 'Acc/Dcc') ? ((parseFloat(value[col[i]])).toFixed(2) + '%') : (parseFloat(value[col[i]])).toFixed(4)) : '-') + '</td>'
 								}
 							}
 						}
@@ -516,6 +516,25 @@ function BindTickerMonthlyData(portfolio_date, ticker_id, ticker_name, ticker_sy
 				}
 
 				$('#lnkTickerMntRtn').click();
+
+				$('#modal_graph').on('shown.bs.modal', function () {
+
+					if ($.fn.DataTable.isDataTable('#_ticker_buy_sell_tbl')) {
+						$('#_ticker_buy_sell_tbl').DataTable().destroy();
+					}
+					$('#_ticker_buy_sell_tbl').DataTable({
+						"paging": false,
+						"ordering": false,
+						"info": false,
+						"searching": false,
+						scrollY: "400px",
+						scrollX: true,
+						scrollCollapse: true,
+						fixedColumns: {
+							leftColumns: 1
+						}
+					});
+				});
 			}
 		}).always(function () {
 			$.unblockUI()

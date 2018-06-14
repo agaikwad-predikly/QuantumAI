@@ -30,9 +30,17 @@ def get_data_for_date(start_date,end_date):
 		ticker_id = tickers[i][2]
 		print("Job Start Date:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		print("Indicators")
+		calculate_xm_ticker_fundamentals_details(ticker_sym, ticker_id)
 		get_indicator_for_ticker_for_date(start_date,end_date, ticker_id, ticker_sym)
+		predict_technical_ticker_indicator(ticker_sym, ticker_id)
+		predict_xm_buy_sell_ticker_indicator(ticker_sym, ticker_id)
+		predict_xm_sell_ticker_indicator(ticker_sym, ticker_id)
+		predict_xmone_sell_ticker_indicator(ticker_sym, ticker_id)
+		predict_xmone_buy_sell_ticker_indicator(ticker_sym, ticker_id)
 		print("Job End Date:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		i+=1
+	rtn = db.vaccum("ticker_indicator_value")
+	log.Error(ticker_sym + " - " + str(ticker_id) + "VACCUM COMPLETE")
 
 def perform():
 	d1 = datetime.datetime.now()
@@ -249,7 +257,6 @@ def calculate_bulk_ticker_fundamentals_details():
 			print(ticker_sym + " - " + str(ticker_id) + "Error")
 			log.Error(e)
 		i+=1
-
 		
 def calculate_bulk_ticker_fundamentals_actual_values_details():
 	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
@@ -372,45 +379,40 @@ def predict_buy_ticker_indicator():
 				#	log.Error(e)
 	except Exception as e:
 		log.Error(e)
-		#print(e + "Error")
 
-def predict_technical_ticker_indicator():
+def predict_technical_ticker_indicator(ticker_sym, ticker_id):
 	try:
-		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		#tickers = db.call_procedure("get_ticker_details_by_data_type","0")
 		i = 0
 		directory = os.path.dirname(os.path.realpath(__file__)) + "\\technical_api"
 		if not os.path.exists(directory):
 			os.makedirs(directory)
-		while i < len(tickers):
-			ticker_sym = tickers[i][1]
-			ticker_id = tickers[i][2]
-			log.Error("TECH STARTED:" + ticker_sym)
-			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		#while i < len(tickers):
+		log.Error("TECH STARTED:" + ticker_sym)
+		filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		try:
+			indicator = db.call_procedure("get_ticker_technical_indicator_value_details_without_target",[ticker_id])
+			df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name','ticker_symbol',	'date',	'14_day_close_price_sma',	'14_day_close_price_high',	'14_day_close_price_low',	'14_day_50_day_sma',	'14_day_100_day_sma',	'14_day_200_day_sma'])
+			df.to_csv(filename, index=False, encoding='utf-8')
+			API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/qa/R/tech/json"
+			f =open(filename,'rb')
+			files = {'input': f}
+			r = requests.post(API_ENDPOINT, files=files)
+			if not r.json() is None:
+				for data in r.json():
+					db.call_procedure("update_indicator_target_data",[data['ticker_id'], 1,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
+		except Exception as e:
+				log.Error(e)
+		finally:
+			#i=i+1
+			f.close()
 			try:
-				indicator = db.call_procedure("get_ticker_technical_indicator_value_details_without_target",[ticker_id])
-				df = pd.DataFrame(indicator,columns=['ticker_id',	'ticker_name','ticker_symbol',	'date',	'14_day_close_price_sma',	'14_day_close_price_high',	'14_day_close_price_low',	'14_day_50_day_sma',	'14_day_100_day_sma',	'14_day_200_day_sma'])
-				df.to_csv(filename, index=False, encoding='utf-8')
-				API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/qa/R/tech/json"
-				f =open(filename,'rb')
-				files = {'input': f}
-				r = requests.post(API_ENDPOINT, files=files)
-				if not r.json() is None:
-					for data in r.json():
-						db.call_procedure("update_indicator_target_data",[data['ticker_id'], 1,data['newdata$PREDICTED'], data['1'],data['0'], data['date'] ])
+				os.remove(filename)					
+				log.Error("TECH COMPLETED:" + ticker_sym)
 			except Exception as e:
-					log.Error(e)
-			finally:
-				i=i+1
-				f.close()
-				try:
-					os.remove(filename)					
-					log.Error("TECH COMPLETED:" + ticker_sym)
-				except Exception as e:
-					log.Error(e)
+				log.Error(e)
 	except Exception as e:
 			log.Error(e)
-			#print(e + "Error")
-
 
 def new_predict_short_sell_fund_ticker_indicator():
 		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
@@ -468,7 +470,6 @@ def calculate_bulk_ticker_fundamentals_xm_indicator():
 			log.Error(e)
 		i+=1
 
-
 def calculate_bulk_ticker_fundamentals_strength_xm_indicator():
 	tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 	i = 0
@@ -488,115 +489,97 @@ def calculate_bulk_ticker_fundamentals_strength_xm_indicator():
 			log.Error(e)
 		i+=1
 
-def predict_xm_sell_ticker_indicator():
+def predict_xm_sell_ticker_indicator(ticker_sym, ticker_id):
 	try:
-		tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+		#tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 		i = 0
 		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xm_buy_fundamental_api"
 		if not os.path.exists(directory):
 			os.makedirs(directory)
-		while i < len(tickers):		
-			ticker_sym = tickers[i][1]
-			ticker_id = tickers[i][2]
-			log.Error("FUND SELL STARTED:" + ticker_sym)
-			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
-			try:
-				indicator = db.call_procedure("get_ticker_xm_fundamental_value_details",[ticker_id,0])
-				df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq1_gross_profit_margin_quarterly" ,"cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly" ,"cq2_gross_profit_margin_quarterly" ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq3_gross_profit_margin_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cq4_gross_profit_margin_quarterly","cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual","cy1_gross_profit_margin_annual"])
-				#df.to_csv(filename, index=False, encoding='utf-8')
-				df = df.dropna() 
-				print(ticker_sym + " - " + str(ticker_id) + "START")
-				if df is not None and len(df.index) > 0:
-					df.to_csv(filename, index=False, encoding='utf-8')
-					f =open(filename,'rb')						
-					try:
-						
-						files = {'input': f}
-						s = requests.session()
-						API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buyselln/R/sellnew/json"
-						pr = s.post(API_ENDPOINT, files=files)
-						print (pr)
-						if not pr.json() is None:
-							df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
-							df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
-							db.call_procedure("update_xm_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
-							#for data in pr.json():
-							#	db.call_procedure("update_xm_indicator_target_data",[data['ticker_id'], 2,data['PREDICTED'], data['1'],data['0'], data['date'] ])
-					except Exception as e:
-						print(e)
-						log.Error(e)
-					finally:
-						f.close()
-			
-					print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
-			except Exception as e:
+		#while i < len(tickers):		
+		#	ticker_sym = tickers[i][1]
+		#	ticker_id = tickers[i][2]
+		log.Error("FUND SELL STARTED:" + ticker_sym)
+		filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		try:
+			indicator = db.call_procedure("get_ticker_xm_fundamental_value_details",[ticker_id,0])
+			df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq1_gross_profit_margin_quarterly" ,"cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly" ,"cq2_gross_profit_margin_quarterly" ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq3_gross_profit_margin_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cq4_gross_profit_margin_quarterly","cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual","cy1_gross_profit_margin_annual"])
+			df = df.dropna() 
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			if df is not None and len(df.index) > 0:
+				df.to_csv(filename, index=False, encoding='utf-8')
+				f =open(filename,'rb')						
+				try:						
+					files = {'input': f}
+					s = requests.session()
+					API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buyselln/R/sellnew/json"
+					pr = s.post(API_ENDPOINT, files=files)
+					if not pr.json() is None:
+						df1 = pd.DataFrame.from_dict(pr.json(), orient='columns')
+						df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
+						db.call_procedure("update_xm_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
+				except Exception as e:
 					print(e)
 					log.Error(e)
-			finally:
+				finally:
+					f.close()
+			
+				print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+				print(e)
+				log.Error(e)
+		finally:
 				i=i+1
-				log.Error("FUND BUY COMPLETED:" + ticker_sym)
-				#try:
-				#	os.remove(filename)
-				#except Exception as e:
-				#	log.Error(e)
+				log.Error("FUND SELL COMPLETED:" + ticker_sym)
 	except Exception as e:
 		print(e)
 		log.Error(e)
 
-def predict_xm_buy_sell_ticker_indicator():
+def predict_xm_buy_sell_ticker_indicator(ticker_sym, ticker_id):
 	try:
-		tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+		#tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 		i = 0
 		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xm_buy_fundamental_api"
 		if not os.path.exists(directory):
 			os.makedirs(directory)
-		while i < len(tickers):		
-			ticker_sym = tickers[i][1]
-			ticker_id = tickers[i][2]
-			log.Error("FUND BUY STARTED:" + ticker_sym)
-			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
-			try:
-				indicator = db.call_procedure("get_ticker_xm_fundamental_value_details",[ticker_id,0])
-				df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq1_gross_profit_margin_quarterly" ,"cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly" ,"cq2_gross_profit_margin_quarterly" ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq3_gross_profit_margin_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cq4_gross_profit_margin_quarterly","cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual","cy1_gross_profit_margin_annual"])
-				#df.to_csv(filename, index=False, encoding='utf-8')
-				df = df.dropna() 
-				print(ticker_sym + " - " + str(ticker_id) + "START")
-				if df is not None and len(df.index) > 0:
-					df.to_csv(filename, index=False, encoding='utf-8')
-					f =open(filename,'rb')						
-					try:
-						
-						API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buyselln/R/buynew/json"
-						files = {'input': f}
-						s = requests.session()
-						r = s.post(API_ENDPOINT, files=files)
-						if not r.json() is None:
-							df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
-							df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
-							db.call_procedure("update_xm_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
-							#for data in r.json():
-							#	db.call_procedure("update_xm_indicator_target_data",[data['ticker_id'], 0,data['PREDICTED'], data['1'],data['0'], data['date'] ])						
-					except Exception as e:
-						print(e)
-						log.Error(e)
-					finally:
-						f.close()
-			
-					print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
-			except Exception as e:
+		#while i < len(tickers):
+		#	ticker_sym = tickers[i][1]
+		#	ticker_id = tickers[i][2]
+		log.Error("FUND BUY STARTED:" + ticker_sym)
+		filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		try:
+			indicator = db.call_procedure("get_ticker_xm_fundamental_value_details",[ticker_id,0])
+			df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq1_gross_profit_margin_quarterly" ,"cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly" ,"cq2_gross_profit_margin_quarterly" ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq3_gross_profit_margin_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cq4_gross_profit_margin_quarterly","cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual","cy1_gross_profit_margin_annual"])
+			df = df.dropna() 
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			if df is not None and len(df.index) > 0:
+				df.to_csv(filename, index=False, encoding='utf-8')
+				f =open(filename,'rb')						
+				try:						
+					API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buyselln/R/buynew/json"
+					files = {'input': f}
+					s = requests.session()
+					r = s.post(API_ENDPOINT, files=files)
+					if not r.json() is None:
+						df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
+						df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
+						db.call_procedure("update_xm_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
+				except Exception as e:
 					print(e)
 					log.Error(e)
-			finally:
+				finally:
+					f.close()
+			
+				print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+				print(e)
+				log.Error(e)
+		finally:
 				i=i+1
 				log.Error("FUND BUY COMPLETED:" + ticker_sym)
-				#try:
-				#	os.remove(filename)
-				#except Exception as e:
-				#	log.Error(e)
 	except Exception as e:
 		print(e)
 		log.Error(e)
-		#print(e + "Error")
 
 def predict_xm_buy_ticker_indicator_to_csv():
 	try:
@@ -711,8 +694,6 @@ def predict_xm_sell_ticker_indicator_to_csv():
 	except Exception as e:
 		print(e)
 		log.Error(e)
-		#print(e + "Error")
-
 
 def save_predict_xm_buy_from_csv():
 	try:
@@ -767,7 +748,6 @@ def save_predict_xm_sell_from_csv():
 	except Exception as e:
 		print(e)
 		log.Error(e)
-		
 
 def save_predict_xm_sell_from_csv_temp():
 	try:
@@ -793,56 +773,130 @@ def save_predict_xm_sell_from_csv_temp():
 	except Exception as e:
 		print(e)
 		log.Error(e)
-		
 
-def predict_xmone_sell_ticker_indicator():
+def predict_xmone_sell_ticker_indicator(ticker_sym, ticker_id):
 	try:
-		tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+		#tickers = db.call_procedure("get_ticker_details_by_data_type","4")
 		i = 0
 		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xmone_sell_fundamental_api"
 		if not os.path.exists(directory):
 			os.makedirs(directory)
+		#while i < len(tickers):		
+		#	ticker_sym = tickers[i][1]
+		#	ticker_id = tickers[i][2]
+		filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		try:
+			indicator = db.call_procedure("get_ticker_xmone_fundamental_value_details",[ticker_id,0])
+			df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly"  ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual"])
+			df = df.dropna() 
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			if df is not None and len(df.index) > 0:
+				df.to_csv(filename, index=False, encoding='utf-8')
+				f =open(filename,'rb')						
+				try:
+						
+					files = {'input': f}
+					s = requests.session()
+					API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buysellwithouGM/R/sellnew/json"
+					r = s.post(API_ENDPOINT, files=files)
+					if not r.json() is None:
+						df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
+						df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
+						db.call_procedure("update_xm_one_indicator_target_data_bulk",[2,df1["update_data"].values.astype(str).tolist()])
+				except Exception as e:
+					print(e)
+					log.Error(e)
+				finally:
+					f.close()
+			
+				print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+				print(e)
+				log.Error(e)
+		finally:
+			i=i+1
+			log.Error("FUND BUY COMPLETED:" + ticker_sym)
+	except Exception as e:
+		print(e)
+		log.Error(e)
+
+def predict_xmone_buy_sell_ticker_indicator(ticker_sym, ticker_id):
+	try:
+		#tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xmone_buy_fundamental_api"
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		#while i < len(tickers):		
+		#	ticker_sym = tickers[i][1]
+		#	ticker_id = tickers[i][2]
+		log.Error("FUND SELL STARTED:" + ticker_sym)
+		filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
+		try:
+			indicator = db.call_procedure("get_ticker_xmone_fundamental_value_details",[ticker_id,0])
+			df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly"  ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual"])
+			df = df.dropna() 
+			print(ticker_sym + " - " + str(ticker_id) + "START")
+			if df is not None and len(df.index) > 0:
+				df.to_csv(filename, index=False, encoding='utf-8')
+				f =open(filename,'rb')						
+				try:						
+					API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buysellwithouGM/R/buynew/json"
+					files = {'input': f}
+					s = requests.session()
+					r = s.post(API_ENDPOINT, files=files)
+					if not r.json() is None:
+						df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
+						df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
+						db.call_procedure("update_xm_one_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
+				except Exception as e:
+					print(e)
+					log.Error(e)
+				finally:
+					f.close()
+			
+				print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		except Exception as e:
+				print(e)
+				log.Error(e)
+		finally:
+			i=i+1
+			log.Error("FUND BUY COMPLETED:" + ticker_sym)
+	except Exception as e:
+		print(e)
+		log.Error(e)
+
+def generate_xm_tain_ticker_indicator_data():
+	try:
+		tickers = db.call_procedure("get_ticker_details_by_data_type","0")
+		i = 0
+		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xm_test_fundamental_api"
+		if not os.path.exists(directory):
+			os.makedirs(directory)
 		while i < len(tickers):		
 			ticker_sym = tickers[i][1]
 			ticker_id = tickers[i][2]
-			log.Error("FUND SELL STARTED:" + ticker_sym)
+			print(ticker_sym + " - " + str(ticker_id) + "START")
 			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
 			try:
-				indicator = db.call_procedure("get_ticker_xmone_fundamental_value_details",[ticker_id,0])
-				df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly"  ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual"])
+				indicator = db.call_procedure("get_ticker_indicator_value_details_without_target",[ticker_id])
+				df = pd.DataFrame(indicator,columns=['ticker_id','ticker_name', 'ticker_symbol', 'date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq1_gross_profit_margin_quarterly" ,"cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly" ,"cq2_gross_profit_margin_quarterly" ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq3_gross_profit_margin_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cq4_gross_profit_margin_quarterly","cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual","cy1_gross_profit_margin_annual"])
 				#df.to_csv(filename, index=False, encoding='utf-8')
+				#print(df)
 				df = df.dropna() 
-				print(ticker_sym + " - " + str(ticker_id) + "START")
+				#print(df)
+				
+			#	print(ticker_sym + " - " + str(ticker_id) + "START")
 				if df is not None and len(df.index) > 0:
 					df.to_csv(filename, index=False, encoding='utf-8')
-					f =open(filename,'rb')						
-					try:
-						
-						files = {'input': f}
-						s = requests.session()
-						API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buysellwithouGM/R/sellnew/json"
-						r = s.post(API_ENDPOINT, files=files)
-						if not r.json() is None:
-							df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
-							#filename = os.path.dirname(os.path.realpath(__file__)) + "\\wgm_sell_data_fundamental_data_output\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
-							#df1.to_csv(filename, index=False, encoding='utf-8')
-							df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
-							db.call_procedure("update_xm_one_indicator_target_data_bulk",[2,df1["update_data"].values.astype(str).tolist()])
-							#for data in pr.json():
-							#	db.call_procedure("update_xm_indicator_target_data",[data['ticker_id'], 2,data['PREDICTED'], data['1'],data['0'], data['date'] ])
-					except Exception as e:
-						print(e)
-						log.Error(e)
-					finally:
-						f.close()
-			
+					
 					print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
 			except Exception as e:
 					print(e)
 					log.Error(e)
 			finally:
 				i=i+1
-				log.Error("FUND BUY COMPLETED:" + ticker_sym)
+				#log.Error("FUND BUY COMPLETED:" + ticker_sym)
 				#try:
 				#	os.remove(filename)
 				#except Exception as e:
@@ -851,69 +905,35 @@ def predict_xmone_sell_ticker_indicator():
 		print(e)
 		log.Error(e)
 
-def predict_xmone_buy_sell_ticker_indicator():
+		
+def calculate_xm_ticker_fundamentals_details(ticker_sym,ticker_id):
+	#tickers = db.call_procedure("get_ticker_details_by_data_type","4")
+	#i = 0
+	#while i < len(tickers):
+	#	ticker_sym = tickers[i][1]
+	#	ticker_id = tickers[i][2]
 	try:
-		tickers = db.call_procedure("get_ticker_details_by_data_type","4")
-		i = 0
-		directory = os.path.dirname(os.path.realpath(__file__)) + "\\xmone_buy_fundamental_api"
-		if not os.path.exists(directory):
-			os.makedirs(directory)
-		while i < len(tickers):		
-			ticker_sym = tickers[i][1]
-			ticker_id = tickers[i][2]
-			log.Error("FUND SELL STARTED:" + ticker_sym)
-			filename = directory + "\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
-			try:
-				indicator = db.call_procedure("get_ticker_xmone_fundamental_value_details",[ticker_id,0])
-				df = pd.DataFrame(indicator,columns=['ticker_id','date',"cq1_revenue_quarterly","cq1_earning_per_share_quarterly","cq1_net_income_quarterly","cq2_revenue_quarterly","cq2_earning_per_share_quarterly","cq2_net_income_quarterly"  ,"cq3_revenue_quarterly" ,"cq3_earning_per_share_quarterly","cq3_net_income_quarterly","cq4_revenue_quarterly" ,"cq4_earning_per_share_quarterly" ,"cq4_net_income_quarterly" ,"cy1_revenue_annual","cy1_earning_per_share_annual","cy1_net_income_annual"])
-				#df.to_csv(filename, index=False, encoding='utf-8')
-				df = df.dropna() 
-				print(ticker_sym + " - " + str(ticker_id) + "START")
-				if df is not None and len(df.index) > 0:
-					df.to_csv(filename, index=False, encoding='utf-8')
-					f =open(filename,'rb')						
-					try:
-						
-						API_ENDPOINT = "http://13.126.153.34:8004/ocpu/user/mahi/library/buysellwithouGM/R/buynew/json"
-						files = {'input': f}
-						s = requests.session()
-						r = s.post(API_ENDPOINT, files=files)
-						if not r.json() is None:
-							df1 = pd.DataFrame.from_dict(r.json(), orient='columns')
-							#filename = os.path.dirname(os.path.realpath(__file__)) + "\\wgm_buy_data_fundamental_data_output\\" + ticker_sym+ 	datetime.datetime.now().strftime('%Y%m%d%H%M%S') +".csv"
-							#df1.to_csv(filename, index=False, encoding='utf-8')
-							df1["update_data"] = df1['ticker_id'].apply(str)+"~'"+ df1['date'].apply(str) +"'~"+ df1['PREDICTED'].apply(str)+"~"+ df1['1'].apply(str)+"~"+df1['0'].apply(str)
-							db.call_procedure("update_xm_one_indicator_target_data_bulk",[0,df1["update_data"].values.astype(str).tolist()])
-							#for data in r.json():
-							#	db.call_procedure("update_xm_indicator_target_data",[data['ticker_id'], 0,data['PREDICTED'], data['1'],data['0'], data['date'] ])						
-					except Exception as e:
-						print(e)
-						log.Error(e)
-					finally:
-						f.close()
-			
-					print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
-			except Exception as e:
-					print(e)
-					log.Error(e)
-			finally:
-				i=i+1
-				log.Error("FUND BUY COMPLETED:" + ticker_sym)
-				#try:
-				#	os.remove(filename)
-				#except Exception as e:
-				#	log.Error(e)
+		print(ticker_sym + " - " + str(ticker_id) + "START")
+		log.Error(ticker_sym + " - " + str(ticker_id) + "START")
+		start_date = datetime.datetime.now() - relativedelta(years=1)
+		indicator = db.call_procedure("insert_update_xm_fundamental_value_details",[ticker_id,start_date.date()])
+		log.Error(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		print(ticker_sym + " - " + str(ticker_id) + "COMPLETE")
+		#if i%100==0:
+		#	rtn = db.vaccum("ticker_indicator_value")
+		#	log.Error(ticker_sym + " - " + str(ticker_id) + "VACCUM COMPLETE")
+		#	print(ticker_sym + " - " + str(ticker_id) + "VACCUM  COMPLETE")
 	except Exception as e:
-		print(e)
+		print(ticker_sym + " - " + str(ticker_id) + "Error")
 		log.Error(e)
-		#print(e + "Error")
+		#i+=1
 
 #calculate_bulk_ticker_fundamentals_actual_values_details()
 #calculate_bulk_ticker_fundamentals_details()
 #calculate_bulk_ticker_technical_details()
 #perform()
 #predict_buy_ticker_indicator()
-predict_technical_ticker_indicator()
+#predict_technical_ticker_indicator()
 #predict_short_sell_fund_ticker_indicator()
 #t = threading.Thread(target=predict_short_sell_fund_ticker_indicator)
 #t.start()
@@ -935,3 +955,4 @@ predict_technical_ticker_indicator()
 #save_predict_xm_sell_from_csv_temp()
 #predict_xmone_buy_sell_ticker_indicator()
 #predict_xmone_sell_ticker_indicator()
+#generate_xm_tain_ticker_indicator_data()
